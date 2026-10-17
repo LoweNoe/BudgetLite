@@ -1,0 +1,198 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:BudgetApp.UI.ViewModels"
+             xmlns:c="using:BudgetApp.UI.Controls"
+             xmlns:ch="using:BudgetApp.UI.Controls.Charts"
+             x:Class="BudgetApp.UI.Views.BudgetsView"
+             x:DataType="vm:BudgetsViewModel">
+  <Grid>
+    <ScrollViewer IsVisible="{Binding HasData}">
+      <StackPanel MaxWidth="{StaticResource ContentMaxWidth}" Margin="{StaticResource PagePadding}" Spacing="{StaticResource SpaceXl}">
+
+        <Grid ColumnDefinitions="*,Auto" Classes="reveal-0">
+          <StackPanel Spacing="{StaticResource SpaceXs}">
+            <TextBlock Classes="display" Text="Budgets" />
+            <TextBlock Classes="secondary" Text="{Binding Caption}" />
+          </StackPanel>
+          <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="{StaticResource SpaceXs}" VerticalAlignment="Center">
+            <Button Classes="icon secondary" Command="{Binding PreviousMonthCommand}" ToolTip.Tip="Previous month">
+              <c:IconView Key="chevron-left" />
+            </Button>
+            <TextBlock Classes="subtitle" Text="{Binding MonthLabel}" VerticalAlignment="Center" Margin="{StaticResource CompactPadding}" />
+            <Button Classes="icon secondary" Command="{Binding NextMonthCommand}" ToolTip.Tip="Next month">
+              <c:IconView Key="chevron-right" />
+            </Button>
+          </StackPanel>
+        </Grid>
+
+        <c:TipCard Classes="appear" IsVisible="{Binding ShowTip}"
+                   Text="Tip: budgets work best when they match how you really spend. Start with our suggestions, then tweak them."
+                   DismissCommand="{Binding DismissTipCommand}" />
+
+        <!-- Overall -->
+        <Border Classes="card reveal-1" IsVisible="{Binding HasBudgets}">
+          <StackPanel Spacing="{StaticResource SpaceL}">
+            <Grid ColumnDefinitions="*,*,*" ColumnSpacing="{StaticResource SpaceL}">
+              <StackPanel Spacing="{StaticResource SpaceXs}">
+                <TextBlock Classes="caption" Text="Budgeted" />
+                <c:AnimatedAmount Classes="amount title" Value="{Binding TotalLimit}" Currency="{Binding Currency}" WholeUnits="True" />
+              </StackPanel>
+              <StackPanel Grid.Column="1" Spacing="{StaticResource SpaceXs}">
+                <TextBlock Classes="caption" Text="Spent" />
+                <c:AnimatedAmount Classes="amount title" Value="{Binding TotalSpent}" Currency="{Binding Currency}" WholeUnits="True" />
+              </StackPanel>
+              <StackPanel Grid.Column="2" Spacing="{StaticResource SpaceXs}">
+                <TextBlock Classes="caption" Text="{Binding LeftLabel}" />
+                <c:AnimatedAmount Classes="amount title" Classes.negative="{Binding TotalIsOver}" Classes.positive="{Binding !TotalIsOver}"
+                                  Value="{Binding TotalLeft}" Currency="{Binding Currency}" WholeUnits="True" />
+              </StackPanel>
+            </Grid>
+            <ch:BudgetBar Spent="{Binding TotalUsed}" Projected="{Binding TotalProjected}" IsOver="{Binding TotalIsOver}" IsWatch="{Binding TotalIsWatch}" />
+            <TextBlock Classes="secondary" Text="{Binding TotalSentence}" TextWrapping="Wrap" />
+          </StackPanel>
+        </Border>
+
+        <!-- Actions -->
+        <StackPanel Orientation="Horizontal" Spacing="{StaticResource SpaceS}" Classes="reveal-2">
+          <Button Classes="primary" Command="{Binding ShowSuggestionsCommand}">
+            <StackPanel Orientation="Horizontal" Spacing="{StaticResource SpaceS}">
+              <c:IconView Key="sparkles" />
+              <TextBlock Text="Suggest budgets" />
+            </StackPanel>
+          </Button>
+          <Button Classes="secondary" Command="{Binding StartAddCommand}" IsEnabled="{Binding CanAddMore}">
+            <StackPanel Orientation="Horizontal" Spacing="{StaticResource SpaceS}">
+              <c:IconView Key="plus" />
+              <TextBlock Text="Add a budget" />
+            </StackPanel>
+          </Button>
+        </StackPanel>
+
+        <!-- Suggestions panel -->
+        <Border Classes="card appear" IsVisible="{Binding IsSuggesting}">
+          <StackPanel Spacing="{StaticResource SpaceM}">
+            <TextBlock Classes="subtitle" Text="Suggested budgets" />
+            <TextBlock Classes="secondary" Text="{Binding SuggestionsCaption}" TextWrapping="Wrap" />
+            <ItemsControl ItemsSource="{Binding Suggestions}">
+              <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                  <StackPanel Spacing="{StaticResource SpaceXs}" />
+                </ItemsPanelTemplate>
+              </ItemsControl.ItemsPanel>
+              <ItemsControl.ItemTemplate>
+                <DataTemplate x:DataType="vm:SuggestionRow">
+                  <Grid ColumnDefinitions="Auto,Auto,*,Auto" ColumnSpacing="{StaticResource SpaceM}">
+                    <CheckBox IsChecked="{Binding IsSelected}" VerticalAlignment="Center" />
+                    <c:ColourDot Grid.Column="1" Token="{Binding Colour}" />
+                    <StackPanel Grid.Column="2" VerticalAlignment="Center">
+                      <TextBlock Text="{Binding Name}" Classes="label" />
+                      <TextBlock Classes="caption" Text="{Binding AverageText}" />
+                    </StackPanel>
+                    <NumericUpDown Grid.Column="3" Value="{Binding Amount}" Minimum="0" Increment="50" FormatString="0"
+                                   Width="{StaticResource AmountColumnWidth}" IsEnabled="{Binding IsSelected}" />
+                  </Grid>
+                </DataTemplate>
+              </ItemsControl.ItemTemplate>
+            </ItemsControl>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="{StaticResource SpaceS}">
+              <Button Classes="ghost" Content="Not now" Command="{Binding CancelSuggestionsCommand}" />
+              <Button Classes="primary" Content="Add these budgets" Command="{Binding ApplySuggestionsCommand}" />
+            </StackPanel>
+          </StackPanel>
+        </Border>
+
+        <!-- Add form -->
+        <Border Classes="card appear" IsVisible="{Binding IsAdding}">
+          <StackPanel Spacing="{StaticResource SpaceM}">
+            <TextBlock Classes="subtitle" Text="Add a budget" />
+            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="{StaticResource SpaceM}">
+              <StackPanel Spacing="{StaticResource SpaceXs}">
+                <TextBlock Classes="label" Text="Category" />
+                <ComboBox ItemsSource="{Binding AvailableCategories}" SelectedItem="{Binding AddCategory}"
+                          ItemTemplate="{StaticResource CategoryOptionTemplate}" HorizontalAlignment="Stretch" />
+              </StackPanel>
+              <StackPanel Grid.Column="1" Spacing="{StaticResource SpaceXs}">
+                <TextBlock Classes="label" Text="Monthly limit" />
+                <NumericUpDown Value="{Binding AddAmount}" Minimum="0" Increment="50" FormatString="0" Width="{StaticResource FieldWidth}" />
+              </StackPanel>
+            </Grid>
+            <TextBlock Classes="caption" Text="{Binding AddHint}" TextWrapping="Wrap" />
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="{StaticResource SpaceS}">
+              <Button Classes="ghost" Content="Cancel" Command="{Binding CancelAddCommand}" />
+              <Button Classes="primary" Content="Save budget" Command="{Binding SaveAddCommand}" />
+            </StackPanel>
+          </StackPanel>
+        </Border>
+
+        <!-- Budget list -->
+        <ItemsControl ItemsSource="{Binding Rows}" Classes="reveal-3" IsVisible="{Binding HasBudgets}">
+          <ItemsControl.ItemsPanel>
+            <ItemsPanelTemplate>
+              <StackPanel Spacing="{StaticResource SpaceM}" />
+            </ItemsPanelTemplate>
+          </ItemsControl.ItemsPanel>
+          <ItemsControl.ItemTemplate>
+            <DataTemplate x:DataType="vm:BudgetRowViewModel">
+              <Border Classes="card interactive">
+                <StackPanel Spacing="{StaticResource SpaceM}">
+                  <Grid ColumnDefinitions="Auto,*,Auto,Auto" ColumnSpacing="{StaticResource SpaceM}">
+                    <Border Classes="category-badge">
+                      <c:IconView Key="{Binding Icon}" />
+                    </Border>
+                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                      <StackPanel Orientation="Horizontal" Spacing="{StaticResource SpaceS}">
+                        <c:ColourDot Token="{Binding Colour}" />
+                        <TextBlock Classes="label" Text="{Binding Name}" />
+                      </StackPanel>
+                      <TextBlock Classes="caption" Text="{Binding DetailText}" />
+                    </StackPanel>
+                    <StackPanel Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right">
+                      <TextBlock Classes="amount" Text="{Binding AmountText}" HorizontalAlignment="Right" />
+                      <TextBlock Classes="caption" Text="{Binding PaceText}" IsVisible="{Binding HasPace}" HorizontalAlignment="Right" />
+                    </StackPanel>
+                    <StackPanel Grid.Column="3" Orientation="Horizontal" Spacing="{StaticResource SpaceXs}" VerticalAlignment="Center">
+                      <Border Classes="badge" Classes.accent="{Binding IsOnTrack}" Classes.warning="{Binding IsWatch}" Classes.danger="{Binding IsOver}">
+                        <TextBlock Text="{Binding StateText}" />
+                      </Border>
+                      <Button Classes="icon ghost" Command="{Binding EditCommand}" ToolTip.Tip="Change limit">
+                        <c:IconView Key="pencil" />
+                      </Button>
+                    </StackPanel>
+                  </Grid>
+                  <ch:BudgetBar Spent="{Binding UsedFraction}" Projected="{Binding ProjectedFraction}" IsOver="{Binding IsOver}" IsWatch="{Binding IsWatch}" />
+                  <Grid ColumnDefinitions="*,Auto,Auto,Auto" ColumnSpacing="{StaticResource SpaceS}" Classes="appear" IsVisible="{Binding IsEditing}">
+                    <Button Classes="danger-ghost" Command="{Binding RemoveCommand}">
+                      <StackPanel Orientation="Horizontal" Spacing="{StaticResource SpaceS}">
+                        <c:IconView Key="trash" />
+                        <TextBlock Text="Remove budget" />
+                      </StackPanel>
+                    </Button>
+                    <NumericUpDown Grid.Column="1" Value="{Binding EditAmount}" Minimum="0" Increment="50" FormatString="0" Width="{StaticResource FieldWidth}" />
+                    <Button Grid.Column="2" Classes="ghost" Content="Cancel" Command="{Binding CancelEditCommand}" />
+                    <Button Grid.Column="3" Classes="primary" Content="Save" Command="{Binding SaveEditCommand}" />
+                  </Grid>
+                </StackPanel>
+              </Border>
+            </DataTemplate>
+          </ItemsControl.ItemTemplate>
+        </ItemsControl>
+
+        <c:EmptyState IsVisible="{Binding ShowEmptyState}"
+                      Classes="appear"
+                      Icon="target"
+                      Title="No budgets yet"
+                      Message="Set a monthly limit for the categories you want to keep an eye on. We'll tell you before you go over."
+                      ActionText="Suggest budgets for me"
+                      Command="{Binding ShowSuggestionsCommand}" />
+      </StackPanel>
+    </ScrollViewer>
+
+    <c:EmptyState IsVisible="{Binding !HasData}"
+                  Classes="appear"
+                  Icon="target"
+                  Title="Budgets need some history"
+                  Message="Import a statement first. We'll use your real spending to suggest budgets that fit."
+                  ActionText="Import a statement"
+                  Command="{Binding GoToImportCommand}" />
+  </Grid>
+</UserControl>

@@ -1,0 +1,306 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:BudgetApp.UI.ViewModels"
+             xmlns:c="using:BudgetApp.UI.Controls"
+             x:Class="BudgetApp.UI.Views.ImportView"
+             x:DataType="vm:ImportViewModel">
+  <UserControl.Styles>
+    <Style Selector="StackPanel.page">
+      <Setter Property="Margin" Value="{StaticResource PagePadding}" />
+      <Setter Property="MaxWidth" Value="{StaticResource ContentMaxWidth}" />
+    </Style>
+    <!-- Inside the setup guide the lists stay compact so the card doesn't tower over the window. -->
+    <Style Selector="ListBox.preview">
+      <Setter Property="MaxHeight" Value="{StaticResource PreviewListHeightCompact}" />
+    </Style>
+    <Style Selector="StackPanel.page ListBox.preview">
+      <Setter Property="MaxHeight" Value="{StaticResource PreviewListHeight}" />
+    </Style>
+    <Style Selector="c|IconView.check">
+      <Setter Property="Width" Value="{StaticResource CheckIconSize}" />
+      <Setter Property="Height" Value="{StaticResource CheckIconSize}" />
+      <Setter Property="HorizontalAlignment" Value="Center" />
+      <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+  </UserControl.Styles>
+
+  <ScrollViewer>
+    <StackPanel Classes.page="{Binding ShowViewTransactions}" Spacing="{StaticResource SpaceXl}">
+      <TextBlock Classes="display" Text="Import statements" IsVisible="{Binding ShowViewTransactions}" />
+
+      <!-- Stepper -->
+      <ItemsControl ItemsSource="{Binding Steps}">
+        <ItemsControl.ItemsPanel>
+          <ItemsPanelTemplate>
+            <WrapPanel ItemSpacing="{StaticResource SpaceS}" LineSpacing="{StaticResource SpaceS}" />
+          </ItemsPanelTemplate>
+        </ItemsControl.ItemsPanel>
+        <ItemsControl.ItemTemplate>
+          <DataTemplate x:DataType="vm:StepItem">
+            <StackPanel Orientation="Horizontal" Spacing="{StaticResource SpaceS}">
+              <Border Classes="connector" Classes.done="{Binding IsDone}" IsVisible="{Binding HasConnector}" />
+              <Border Classes="step-badge" Classes.current="{Binding IsCurrent}" Classes.done="{Binding IsDone}">
+                <Panel>
+                  <TextBlock Text="{Binding Number}" IsVisible="{Binding !IsDone}" />
+                  <c:IconView Classes="check" Key="check" Foreground="{DynamicResource AccentTextBrush}" IsVisible="{Binding IsDone}" />
+                </Panel>
+              </Border>
+              <TextBlock Text="{Binding Title}"
+                         Classes.label="{Binding IsCurrent}"
+                         Classes.secondary="{Binding !IsCurrent}"
+                         VerticalAlignment="Center" />
+            </StackPanel>
+          </DataTemplate>
+        </ItemsControl.ItemTemplate>
+      </ItemsControl>
+
+      <TextBlock Classes="subtitle" Text="{Binding StepSentence}" TextWrapping="Wrap" />
+
+      <Border Classes="warning appear" IsVisible="{Binding HasError}">
+        <StackPanel Orientation="Horizontal" Spacing="{StaticResource SpaceM}">
+          <c:IconView Key="alert" Foreground="{DynamicResource WarningTextBrush}" />
+          <TextBlock Text="{Binding ErrorMessage}" TextWrapping="Wrap" VerticalAlignment="Center" />
+        </StackPanel>
+      </Border>
+
+      <!-- 1. Choose file: click or drop a CSV anywhere on this card -->
+      <Border x:Name="DropZone"
+              Classes="drop-zone appear"
+              IsVisible="{Binding IsChooseFile}"
+              BorderThickness="2"
+              CornerRadius="{StaticResource CardRadius}"
+              MinHeight="{StaticResource DropZoneHeight}"
+              DragDrop.AllowDrop="True">
+        <StackPanel Spacing="{StaticResource SpaceL}" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="{StaticResource CardPadding}">
+          <Border Classes="icon-badge" HorizontalAlignment="Center">
+            <c:IconView Classes="large drop-icon" Key="upload" Foreground="{DynamicResource AccentTextBrush}" />
+          </Border>
+          <StackPanel Spacing="{StaticResource SpaceXs}">
+            <TextBlock Classes="subtitle" Text="Drop your statements here" HorizontalAlignment="Center" />
+            <TextBlock Classes="secondary"
+                       Text="CSV or PDF, one file or a whole year's worth. FNB, Standard Bank, Absa, Nedbank, Capitec and most other banks work."
+                       TextAlignment="Center"
+                       TextWrapping="Wrap" />
+          </StackPanel>
+          <Button Classes="primary"
+                  HorizontalAlignment="Center"
+                  Content="Choose files…"
+                  Command="{Binding ChooseFileCommand}"
+                  IsEnabled="{Binding !IsBusy}" />
+          <StackPanel Spacing="{StaticResource SpaceXs}" IsVisible="{Binding IsBusy}" HorizontalAlignment="Center">
+            <ProgressBar IsIndeterminate="True" Width="{StaticResource FieldWidth}" />
+            <TextBlock Classes="caption" Text="{Binding BusyText}" HorizontalAlignment="Center" />
+          </StackPanel>
+          <TextBlock Classes="caption"
+                     Text="Importing an overlapping period is fine. We skip transactions you already have."
+                     TextAlignment="Center"
+                     TextWrapping="Wrap" />
+        </StackPanel>
+      </Border>
+
+      <!-- Unlock a password-protected PDF -->
+      <Border Classes="card appear" IsVisible="{Binding IsUnlock}">
+        <StackPanel Spacing="{StaticResource SpaceL}" MaxWidth="{StaticResource DialogWidth}" HorizontalAlignment="Center" Margin="{StaticResource CardPadding}">
+          <Border Classes="icon-badge pop" IsVisible="{Binding IsUnlock}" HorizontalAlignment="Center">
+            <c:IconView Classes="large" Key="lock" Foreground="{DynamicResource AccentTextBrush}" />
+          </Border>
+          <StackPanel Spacing="{StaticResource SpaceXs}">
+            <TextBlock Classes="subtitle" Text="{Binding FileName, StringFormat='{}{0} is password-protected'}" TextAlignment="Center" TextWrapping="Wrap" />
+            <TextBlock Classes="secondary" TextAlignment="Center" TextWrapping="Wrap"
+                       Text="Most banks use your ID number. Your bank's email usually says which. The password is only used to open the file and is never saved." />
+          </StackPanel>
+          <TextBox Text="{Binding PasswordInput}" PasswordChar="•" PlaceholderText="Password" />
+          <TextBlock Classes="caption negative" Text="{Binding PasswordError}" IsVisible="{Binding PasswordError, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+                     TextAlignment="Center" TextWrapping="Wrap" />
+          <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="{StaticResource SpaceS}">
+            <Button Classes="ghost" Content="Skip this file" Command="{Binding SkipFileCommand}" />
+            <Button Classes="primary" Content="Unlock" Command="{Binding UnlockCommand}" IsDefault="True" />
+          </StackPanel>
+        </StackPanel>
+      </Border>
+
+      <!-- 2. Map columns (only when detection fails) -->
+      <StackPanel Classes="appear" IsVisible="{Binding IsMapColumns}" Spacing="{StaticResource SpaceL}">
+        <Border Classes="card">
+          <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto"
+                ColumnSpacing="{StaticResource SpaceXl}" RowSpacing="{StaticResource SpaceM}">
+            <TextBlock Classes="label" Text="Date" VerticalAlignment="Center" />
+            <ComboBox Grid.Column="1" MinWidth="{StaticResource FieldWidth}"
+                      ItemsSource="{Binding ColumnOptions}" SelectedItem="{Binding DateColumn}" DisplayMemberBinding="{Binding Name, DataType=vm:ColumnOption}" />
+
+            <TextBlock Grid.Row="1" Classes="label" Text="Description" VerticalAlignment="Center" />
+            <ComboBox Grid.Row="1" Grid.Column="1" MinWidth="{StaticResource FieldWidth}"
+                      ItemsSource="{Binding ColumnOptions}" SelectedItem="{Binding DescriptionColumn}" DisplayMemberBinding="{Binding Name, DataType=vm:ColumnOption}" />
+
+            <TextBlock Grid.Row="2" Classes="label" Text="Amounts" VerticalAlignment="Center" />
+            <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal" Spacing="{StaticResource SpaceL}">
+              <RadioButton Content="One amount column" IsChecked="{Binding UseSingleAmount}" />
+              <RadioButton Content="Separate money in and money out" IsChecked="{Binding UseDebitCredit}" />
+            </StackPanel>
+
+            <TextBlock Grid.Row="3" Classes="label" Text="Amount" VerticalAlignment="Center" IsVisible="{Binding UseSingleAmount}" />
+            <ComboBox Grid.Row="3" Grid.Column="1" MinWidth="{StaticResource FieldWidth}" IsVisible="{Binding UseSingleAmount}"
+                      ItemsSource="{Binding ColumnOptions}" SelectedItem="{Binding AmountColumn}" DisplayMemberBinding="{Binding Name, DataType=vm:ColumnOption}" />
+
+            <TextBlock Grid.Row="3" Classes="label" Text="Money out / in" VerticalAlignment="Center" IsVisible="{Binding UseDebitCredit}" />
+            <StackPanel Grid.Row="3" Grid.Column="1" Orientation="Horizontal" Spacing="{StaticResource SpaceM}" IsVisible="{Binding UseDebitCredit}">
+              <ComboBox MinWidth="{StaticResource FieldWidth}" ItemsSource="{Binding OptionalColumnOptions}" SelectedItem="{Binding DebitColumn}" DisplayMemberBinding="{Binding Name, DataType=vm:ColumnOption}" />
+              <ComboBox MinWidth="{StaticResource FieldWidth}" ItemsSource="{Binding OptionalColumnOptions}" SelectedItem="{Binding CreditColumn}" DisplayMemberBinding="{Binding Name, DataType=vm:ColumnOption}" />
+            </StackPanel>
+
+            <TextBlock Grid.Row="4" Classes="label" Text="Balance (optional)" VerticalAlignment="Center" />
+            <ComboBox Grid.Row="4" Grid.Column="1" MinWidth="{StaticResource FieldWidth}"
+                      ItemsSource="{Binding OptionalColumnOptions}" SelectedItem="{Binding BalanceColumn}" DisplayMemberBinding="{Binding Name, DataType=vm:ColumnOption}" />
+          </Grid>
+        </Border>
+
+        <Border Classes="card">
+          <StackPanel Spacing="{StaticResource SpaceS}">
+            <TextBlock Classes="caption" Text="{Binding FileName, StringFormat='First rows of {0}'}" />
+            <ItemsControl ItemsSource="{Binding SampleLines}">
+              <ItemsControl.ItemTemplate>
+                <DataTemplate x:DataType="x:String">
+                  <TextBlock Classes="secondary" Text="{Binding}" TextTrimming="CharacterEllipsis" />
+                </DataTemplate>
+              </ItemsControl.ItemTemplate>
+            </ItemsControl>
+          </StackPanel>
+        </Border>
+
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="{StaticResource SpaceS}">
+          <Button Classes="ghost" Content="Skip this file" Command="{Binding SkipFileCommand}" />
+          <Button Classes="secondary" Content="Back" Command="{Binding BackCommand}" />
+          <Button Classes="primary" Content="Continue" Command="{Binding ApplyMappingCommand}" IsEnabled="{Binding !IsBusy}" />
+        </StackPanel>
+      </StackPanel>
+
+      <!-- 3. Preview -->
+      <StackPanel Classes="appear" IsVisible="{Binding IsPreview}" Spacing="{StaticResource SpaceL}">
+        <!-- The decision sits right next to its summary; everything below is supporting detail. -->
+        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="{StaticResource SpaceL}">
+          <TextBlock Classes="subtitle" Text="{Binding PreviewSummary}" TextWrapping="Wrap" VerticalAlignment="Center" />
+          <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="{StaticResource SpaceS}" VerticalAlignment="Center">
+            <Button Classes="secondary" Content="Back" Command="{Binding BackCommand}" />
+            <Button Classes="primary" Content="{Binding ImportButtonText}" Command="{Binding ImportTransactionsCommand}" IsEnabled="{Binding CanImport}" IsDefault="True" />
+          </StackPanel>
+        </Grid>
+
+        <ItemsControl ItemsSource="{Binding Files}">
+          <ItemsControl.ItemsPanel>
+            <ItemsPanelTemplate>
+              <StackPanel Spacing="{StaticResource SpaceXs}" />
+            </ItemsPanelTemplate>
+          </ItemsControl.ItemsPanel>
+          <ItemsControl.ItemTemplate>
+            <DataTemplate x:DataType="vm:FileSummary">
+              <Border Classes="insight" Classes.positive="{Binding IsGood}" Classes.warning="{Binding IsFailed}">
+                <Grid ColumnDefinitions="Auto,*,Auto,Auto" ColumnSpacing="{StaticResource SpaceM}">
+                  <c:IconView Key="{Binding Icon}" VerticalAlignment="Center" />
+                  <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                    <TextBlock Classes="label" Text="{Binding FileName}" TextTrimming="CharacterEllipsis" />
+                    <TextBlock Classes="caption" Text="{Binding Detail}" TextWrapping="Wrap" />
+                  </StackPanel>
+                  <Border Grid.Column="2" Classes="badge" IsVisible="{Binding HasBank}">
+                    <TextBlock Text="{Binding BankName}" />
+                  </Border>
+                  <Border Grid.Column="3" Classes="badge" Classes.accent="{Binding IsGood}" Classes.warning="{Binding IsWarning}" Classes.danger="{Binding IsFailed}">
+                    <StackPanel Orientation="Horizontal" Spacing="{StaticResource SpaceXs}">
+                      <c:IconView Key="check" Width="{StaticResource BadgeIconSize}" Height="{StaticResource BadgeIconSize}"
+                                  Foreground="{DynamicResource AccentTextBrush}" IsVisible="{Binding IsGood}" />
+                      <TextBlock Text="{Binding StatusText}" />
+                    </StackPanel>
+                  </Border>
+                </Grid>
+              </Border>
+            </DataTemplate>
+          </ItemsControl.ItemTemplate>
+        </ItemsControl>
+
+        <Border Classes="warning appear" IsVisible="{Binding HasWarnings}">
+          <StackPanel Spacing="{StaticResource SpaceXs}">
+            <TextBlock Classes="label" Text="A few rows didn't match the statement's running balance:" />
+            <ItemsControl ItemsSource="{Binding Warnings}">
+              <ItemsControl.ItemTemplate>
+                <DataTemplate x:DataType="x:String">
+                  <TextBlock Text="{Binding}" TextWrapping="Wrap" />
+                </DataTemplate>
+              </ItemsControl.ItemTemplate>
+            </ItemsControl>
+          </StackPanel>
+        </Border>
+        <Border Classes="banner appear" IsVisible="{Binding HasDuplicates}">
+          <StackPanel Orientation="Horizontal" Spacing="{StaticResource SpaceM}">
+            <c:IconView Key="info" Foreground="{DynamicResource AccentTextBrush}" />
+            <TextBlock Text="{Binding DuplicateSummary}" TextWrapping="Wrap" VerticalAlignment="Center" />
+          </StackPanel>
+        </Border>
+        <Border Classes="card" Padding="{StaticResource CompactPadding}">
+          <ListBox Classes="rows preview" ItemsSource="{Binding PreviewRows}">
+            <ListBox.ItemTemplate>
+              <DataTemplate x:DataType="vm:PreviewRow">
+                <Grid ColumnSpacing="{StaticResource SpaceL}">
+                  <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="{StaticResource DateColumnLength}" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="{StaticResource AmountColumnLength}" />
+                  </Grid.ColumnDefinitions>
+                  <TextBlock Classes="secondary" Text="{Binding DateText}" VerticalAlignment="Center" />
+                  <TextBlock Grid.Column="1" Text="{Binding Description}" TextTrimming="CharacterEllipsis" VerticalAlignment="Center" />
+                  <Border Grid.Column="2" Classes="tag" IsVisible="{Binding IsDuplicate}">
+                    <TextBlock Text="Already imported" />
+                  </Border>
+                  <TextBlock Grid.Column="3" Classes="amount" Classes.positive="{Binding IsCredit}"
+                             Text="{Binding AmountText}" HorizontalAlignment="Right" VerticalAlignment="Center" />
+                </Grid>
+              </DataTemplate>
+            </ListBox.ItemTemplate>
+          </ListBox>
+        </Border>
+      </StackPanel>
+
+      <!-- 4. Review categories -->
+      <StackPanel Classes="appear" IsVisible="{Binding IsReview}" Spacing="{StaticResource SpaceL}">
+        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="{StaticResource SpaceL}">
+          <TextBlock Classes="secondary" TextWrapping="Wrap" VerticalAlignment="Center"
+                     Text="Uncategorised ones are listed first. Changes save as you go." />
+          <Button Grid.Column="1" Classes="primary" Content="Looks good" Command="{Binding FinishReviewCommand}" IsDefault="True" VerticalAlignment="Center" />
+        </Grid>
+        <ItemsControl ItemsSource="{Binding ReviewSummary}">
+          <ItemsControl.ItemsPanel>
+            <ItemsPanelTemplate>
+              <WrapPanel />
+            </ItemsPanelTemplate>
+          </ItemsControl.ItemsPanel>
+          <ItemsControl.ItemTemplate>
+            <DataTemplate x:DataType="vm:CategoryCount">
+              <Border Classes="card" Padding="{StaticResource ChipPadding}" Margin="{StaticResource ChipMargin}">
+                <StackPanel Orientation="Horizontal" Spacing="{StaticResource SpaceS}">
+                  <c:ColourDot Token="{Binding Colour}" />
+                  <TextBlock Text="{Binding Name}" />
+                  <TextBlock Classes="secondary amount" Text="{Binding CountText}" />
+                </StackPanel>
+              </Border>
+            </DataTemplate>
+          </ItemsControl.ItemTemplate>
+        </ItemsControl>
+        <Border Classes="card" Padding="{StaticResource CompactPadding}">
+          <ListBox Classes="rows preview" ItemsSource="{Binding ReviewRows}" ItemTemplate="{StaticResource TransactionRowTemplate}" />
+        </Border>
+      </StackPanel>
+
+      <!-- 5. Done -->
+      <StackPanel Classes="appear" IsVisible="{Binding IsDone}" Spacing="{StaticResource SpaceL}" HorizontalAlignment="Center">
+        <Border Classes="icon-badge pop" IsVisible="{Binding IsDone}" HorizontalAlignment="Center">
+          <c:IconView Classes="large" Key="check-circle" Foreground="{DynamicResource AccentTextBrush}" />
+        </Border>
+        <TextBlock Classes="title" Text="Import complete" HorizontalAlignment="Center" />
+        <TextBlock Classes="secondary" Text="{Binding DoneSummary}" TextWrapping="Wrap" TextAlignment="Center" />
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="{StaticResource SpaceS}" IsVisible="{Binding ShowViewTransactions}">
+          <Button Classes="secondary" Content="Import another" Command="{Binding ResetCommand}" />
+          <Button Classes="primary" Content="View transactions" Command="{Binding ViewTransactionsCommand}" />
+        </StackPanel>
+      </StackPanel>
+    </StackPanel>
+  </ScrollViewer>
+</UserControl>

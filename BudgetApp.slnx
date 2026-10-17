@@ -1,0 +1,11 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/BudgetApp.Core/BudgetApp.Core.csproj" />
+    <Project Path="src/BudgetApp.Data/BudgetApp.Data.csproj" />
+    <Project Path="src/BudgetApp.Import/BudgetApp.Import.csproj" />
+    <Project Path="src/BudgetApp.UI/BudgetApp.UI.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/BudgetApp.Tests/BudgetApp.Tests.csproj" />
+  </Folder>
+</Solution>

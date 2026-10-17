@@ -1,0 +1,26 @@
+# Build output
+bin/
+obj/
+publish/
+artifacts/
+TestResults/
+
+# IDE / OS
+.vs/
+.vscode/
+.idea/
+*.user
+*.suo
+*.DotSettings.user
+.DS_Store
+Thumbs.db
+
+# Marketing videos and their working files
+brag-output*/
+
+# Old project, not part of the solution
+_legacy/
+
+# Release binaries
+*.exe
+*.zip

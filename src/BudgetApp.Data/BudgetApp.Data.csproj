@@ -1,0 +1,8 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="..\BudgetApp.Core\BudgetApp.Core.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Defaults\bank-tips.json" LogicalName="BudgetApp.Data.bank-tips.json" />
+  </ItemGroup>
+</Project>

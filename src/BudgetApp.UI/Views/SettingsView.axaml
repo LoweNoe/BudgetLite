@@ -1,0 +1,124 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:BudgetApp.UI.ViewModels"
+             xmlns:v="using:BudgetApp.UI.Views"
+             xmlns:c="using:BudgetApp.UI.Controls"
+             x:Class="BudgetApp.UI.Views.SettingsView"
+             x:DataType="vm:SettingsViewModel">
+  <ScrollViewer>
+    <StackPanel MaxWidth="{StaticResource ContentMaxWidth}" Margin="{StaticResource PagePadding}" Spacing="{StaticResource SpaceXl}">
+      <TextBlock Classes="display reveal-0" Text="Settings" />
+
+      <c:ResponsiveRow Spacing="{StaticResource SpaceL}" BreakWidth="{StaticResource ResponsiveBreak}" Classes="reveal-1">
+        <Border Classes="card">
+          <StackPanel Spacing="{StaticResource SpaceM}">
+            <TextBlock Classes="subtitle" Text="Appearance" />
+            <v:ThemePicker DataContext="{Binding Theme}" />
+          </StackPanel>
+        </Border>
+
+        <Border Classes="card">
+          <StackPanel Spacing="{StaticResource SpaceL}">
+            <TextBlock Classes="subtitle" Text="Money" />
+            <StackPanel Spacing="{StaticResource SpaceXs}">
+              <TextBlock Classes="label" Text="Payday (day of the month)" />
+              <NumericUpDown Value="{Binding PayDay}" Minimum="1" Maximum="31" Increment="1" FormatString="0"
+                             HorizontalAlignment="Stretch" />
+            </StackPanel>
+            <StackPanel Spacing="{StaticResource SpaceXs}">
+              <TextBlock Classes="label" Text="If payday falls on a weekend" />
+              <ComboBox ItemsSource="{Binding WeekendOptions}" SelectedItem="{Binding SelectedWeekendOption}" HorizontalAlignment="Stretch"
+                        DisplayMemberBinding="{Binding Label, DataType=vm:WeekendOption}" />
+            </StackPanel>
+            <StackPanel Spacing="{StaticResource SpaceXs}">
+              <TextBlock Classes="label" Text="Currency" />
+              <ComboBox ItemsSource="{Binding Currencies}" SelectedItem="{Binding SelectedCurrency}" HorizontalAlignment="Stretch" />
+            </StackPanel>
+          </StackPanel>
+        </Border>
+      </c:ResponsiveRow>
+
+      <Border Classes="insight positive appear" IsVisible="{Binding HasSalaryHint}">
+        <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="{StaticResource SpaceM}">
+          <c:IconView Key="wallet" VerticalAlignment="Center" />
+          <TextBlock Grid.Column="1" Text="{Binding SalaryHint}" TextWrapping="Wrap" VerticalAlignment="Center" />
+          <Button Grid.Column="2" Classes="secondary" Content="{Binding UseDetectedDayText}" Command="{Binding UseDetectedDayCommand}"
+                  IsVisible="{Binding CanUseDetectedDay}" VerticalAlignment="Center" />
+        </Grid>
+      </Border>
+
+      <Border Classes="card reveal-2">
+        <StackPanel Spacing="{StaticResource SpaceM}">
+          <Grid ColumnDefinitions="*,Auto">
+            <StackPanel Spacing="{StaticResource SpaceXs}">
+              <TextBlock Classes="subtitle" Text="Your data" />
+              <TextBlock Classes="secondary" TextWrapping="Wrap"
+                         Text="Everything is saved as plain JSON files on this computer. Nothing is ever sent anywhere." />
+            </StackPanel>
+            <ProgressBar Grid.Column="1" IsIndeterminate="True" IsVisible="{Binding IsBusy}" Width="{StaticResource IconBadgeSize}" VerticalAlignment="Top" />
+          </Grid>
+          <TextBlock Classes="caption" Text="{Binding DataSummary}" />
+          <Border Classes="insight">
+            <Grid ColumnDefinitions="Auto,*,Auto,Auto" ColumnSpacing="{StaticResource SpaceM}">
+              <c:IconView Key="folder" VerticalAlignment="Center" />
+              <TextBlock Grid.Column="1" Text="{Binding DataFolder}" TextTrimming="CharacterEllipsis" VerticalAlignment="Center"
+                         ToolTip.Tip="{Binding DataFolder}" />
+              <Button Grid.Column="2" Classes="ghost" Content="Open" Command="{Binding OpenDataFolderCommand}" />
+              <Button Grid.Column="3" Classes="secondary" Content="Change…" Command="{Binding ChangeDataFolderCommand}"
+                      IsVisible="{Binding CanMoveFolder}" />
+            </Grid>
+          </Border>
+
+          <WrapPanel ItemSpacing="{StaticResource SpaceS}" LineSpacing="{StaticResource SpaceS}">
+            <Button Classes="secondary" Command="{Binding CreateBackupCommand}" IsEnabled="{Binding !IsBusy}">
+              <StackPanel Orientation="Horizontal" Spacing="{StaticResource SpaceS}">
+                <c:IconView Key="archive" />
+                <TextBlock Text="Create a backup" />
+              </StackPanel>
+            </Button>
+            <Button Classes="secondary" Command="{Binding RestoreBackupCommand}" IsEnabled="{Binding !IsBusy}">
+              <StackPanel Orientation="Horizontal" Spacing="{StaticResource SpaceS}">
+                <c:IconView Key="restore" />
+                <TextBlock Text="Restore a backup" />
+              </StackPanel>
+            </Button>
+            <Button Classes="secondary" Command="{Binding ExportCsvCommand}" IsEnabled="{Binding !IsBusy}">
+              <StackPanel Orientation="Horizontal" Spacing="{StaticResource SpaceS}">
+                <c:IconView Key="download" />
+                <TextBlock Text="Export transactions (CSV)" />
+              </StackPanel>
+            </Button>
+          </WrapPanel>
+        </StackPanel>
+      </Border>
+
+      <Border Classes="card reveal-3">
+        <StackPanel Spacing="{StaticResource SpaceM}">
+          <TextBlock Classes="subtitle" Text="Help" />
+          <TextBlock Classes="secondary" TextWrapping="Wrap" Text="Walk through the setup guide again, including how to download statements from your bank." />
+          <WrapPanel ItemSpacing="{StaticResource SpaceS}" LineSpacing="{StaticResource SpaceS}">
+            <Button Classes="secondary" Content="Run the setup guide again" Command="{Binding RerunOnboardingCommand}" />
+            <Button Classes="ghost" Content="Show tips again" Command="{Binding ResetTipsCommand}" />
+          </WrapPanel>
+        </StackPanel>
+      </Border>
+
+      <Expander Classes="reveal-4" Header="More options">
+        <Border Classes="card" Margin="{StaticResource SectionGap}">
+          <Grid ColumnDefinitions="*,Auto" ColumnSpacing="{StaticResource SpaceL}">
+            <StackPanel Spacing="{StaticResource SpaceXs}">
+              <TextBlock Classes="label" Text="Delete all transactions" />
+              <TextBlock Classes="caption" TextWrapping="Wrap" Text="Start fresh while keeping your categories, rules and settings." />
+            </StackPanel>
+            <Button Grid.Column="1" Classes="danger-ghost" Command="{Binding DeleteAllTransactionsCommand}" VerticalAlignment="Center">
+              <StackPanel Orientation="Horizontal" Spacing="{StaticResource SpaceS}">
+                <c:IconView Key="trash" />
+                <TextBlock Text="Delete" />
+              </StackPanel>
+            </Button>
+          </Grid>
+        </Border>
+      </Expander>
+    </StackPanel>
+  </ScrollViewer>
+</UserControl>

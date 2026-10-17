@@ -1,0 +1,50 @@
+{
+  "version": 1,
+  "data": [
+    {
+      "bank": "FNB",
+      "summary": "Online banking or the FNB app, exported as CSV.",
+      "steps": [
+        "Log in to FNB Online Banking on a computer.",
+        "Open My Bank Accounts and pick the account.",
+        "Choose Transaction History, set the date range, then Download and select CSV."
+      ]
+    },
+    {
+      "bank": "Standard Bank",
+      "summary": "Internet banking, exported as CSV.",
+      "steps": [
+        "Sign in to Standard Bank Internet Banking.",
+        "Select your account and open Transaction History.",
+        "Pick the period you want and choose Export, then CSV."
+      ]
+    },
+    {
+      "bank": "Absa",
+      "summary": "Absa online banking, exported as CSV.",
+      "steps": [
+        "Log in to Absa Online.",
+        "Go to Accounts and choose the account.",
+        "Open Transaction History, choose the dates and click Export as CSV."
+      ]
+    },
+    {
+      "bank": "Nedbank",
+      "summary": "Nedbank Money (web), exported as CSV.",
+      "steps": [
+        "Sign in to Nedbank Money on the web.",
+        "Select your account and open Transactions.",
+        "Filter by date, then use Download and choose CSV."
+      ]
+    },
+    {
+      "bank": "Capitec",
+      "summary": "Capitec app or internet banking, exported as CSV.",
+      "steps": [
+        "Log in to Capitec internet banking on a computer.",
+        "Open your account and choose Transaction History.",
+        "Select the date range and download the statement as CSV."
+      ]
+    }
+  ]
+}

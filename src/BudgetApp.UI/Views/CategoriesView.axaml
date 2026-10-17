@@ -1,0 +1,204 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:BudgetApp.UI.ViewModels"
+             xmlns:c="using:BudgetApp.UI.Controls"
+             x:Class="BudgetApp.UI.Views.CategoriesView"
+             x:DataType="vm:CategoriesViewModel">
+  <Grid RowDefinitions="Auto,Auto,*" RowSpacing="{StaticResource SpaceL}"
+        MaxWidth="{StaticResource DashboardMaxWidth}" Margin="{StaticResource PagePadding}">
+
+    <Grid ColumnDefinitions="*,Auto" Classes="reveal-0">
+      <StackPanel Spacing="{StaticResource SpaceXs}">
+        <TextBlock Classes="display" Text="Categories &amp; rules" />
+        <TextBlock Classes="secondary" Text="{Binding Summary}" />
+      </StackPanel>
+      <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="{StaticResource SpaceS}" VerticalAlignment="Center">
+        <Button Classes="secondary" Command="{Binding ReapplyRulesCommand}" ToolTip.Tip="Run your rules over uncategorised transactions">
+          <StackPanel Orientation="Horizontal" Spacing="{StaticResource SpaceS}">
+            <c:IconView Key="refresh" />
+            <TextBlock Text="Sort uncategorised" />
+          </StackPanel>
+        </Button>
+        <Button Classes="primary" Command="{Binding NewCategoryCommand}">
+          <StackPanel Orientation="Horizontal" Spacing="{StaticResource SpaceS}">
+            <c:IconView Key="plus" />
+            <TextBlock Text="New category" />
+          </StackPanel>
+        </Button>
+      </StackPanel>
+    </Grid>
+
+    <c:TipCard Grid.Row="1" Classes="appear" IsVisible="{Binding ShowEssentialTip}"
+               Text="Tip: non-essential categories feed the 'unnecessary spending' insights. Mark the ones you could cut back on."
+               DismissCommand="{Binding DismissEssentialTipCommand}" />
+
+    <Grid Grid.Row="2" ColumnSpacing="{StaticResource SpaceL}" Classes="reveal-1">
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="*" />
+        <ColumnDefinition Width="Auto" />
+      </Grid.ColumnDefinitions>
+
+      <!-- Category list -->
+      <Border Classes="card" Padding="{StaticResource CompactPadding}">
+        <ListBox Classes="rows" ItemsSource="{Binding Items}" SelectedItem="{Binding SelectedItem}">
+          <ListBox.ItemTemplate>
+            <DataTemplate x:DataType="vm:CategoryListItem">
+              <Grid ColumnDefinitions="Auto,Auto,*,Auto" ColumnSpacing="{StaticResource SpaceM}">
+                <c:ColourDot Token="{Binding Colour}" />
+                <c:IconView Grid.Column="1" Key="{Binding Icon}" Foreground="{DynamicResource TextSecondaryBrush}" VerticalAlignment="Center" />
+                <StackPanel Grid.Column="2">
+                  <TextBlock Text="{Binding Name}" Classes="label" />
+                  <TextBlock Classes="caption" Text="{Binding Detail}" />
+                </StackPanel>
+                <TextBlock Grid.Column="3" Classes="amount secondary" Text="{Binding SpendText}" VerticalAlignment="Center" />
+              </Grid>
+            </DataTemplate>
+          </ListBox.ItemTemplate>
+        </ListBox>
+      </Border>
+
+      <!-- Editor -->
+      <Border Grid.Column="1" Classes="card appear" Width="{StaticResource EditorWidth}" IsVisible="{Binding HasEditor}">
+        <ScrollViewer>
+          <StackPanel Spacing="{StaticResource SpaceL}" Margin="{StaticResource ScrollGutter}">
+            <Grid ColumnDefinitions="*,Auto">
+              <TextBlock Classes="title" Text="{Binding EditorTitle}" TextTrimming="CharacterEllipsis" />
+              <Button Grid.Column="1" Classes="icon ghost" Command="{Binding CloseEditorCommand}" ToolTip.Tip="Close">
+                <c:IconView Key="x" />
+              </Button>
+            </Grid>
+
+            <StackPanel Spacing="{StaticResource SpaceXs}">
+              <TextBlock Classes="label" Text="Name" />
+              <TextBox Text="{Binding EditName}" PlaceholderText="e.g. Pets" />
+            </StackPanel>
+
+            <StackPanel Spacing="{StaticResource SpaceXs}">
+              <TextBlock Classes="label" Text="Colour" />
+              <ListBox Classes="swatches" ItemsSource="{Binding Colours}" SelectedItem="{Binding EditColour}">
+                <ListBox.ItemsPanel>
+                  <ItemsPanelTemplate>
+                    <WrapPanel />
+                  </ItemsPanelTemplate>
+                </ListBox.ItemsPanel>
+                <ListBox.ItemTemplate>
+                  <DataTemplate x:DataType="x:String">
+                    <c:ColourDot Classes="swatch" Token="{Binding}" />
+                  </DataTemplate>
+                </ListBox.ItemTemplate>
+              </ListBox>
+            </StackPanel>
+
+            <StackPanel Spacing="{StaticResource SpaceXs}">
+              <TextBlock Classes="label" Text="Icon" />
+              <ListBox Classes="icon-tiles" ItemsSource="{Binding Icons}" SelectedItem="{Binding EditIcon}">
+                <ListBox.ItemsPanel>
+                  <ItemsPanelTemplate>
+                    <WrapPanel />
+                  </ItemsPanelTemplate>
+                </ListBox.ItemsPanel>
+                <ListBox.ItemTemplate>
+                  <DataTemplate x:DataType="x:String">
+                    <c:IconView Key="{Binding}" Margin="{StaticResource CompactPadding}" />
+                  </DataTemplate>
+                </ListBox.ItemTemplate>
+              </ListBox>
+            </StackPanel>
+
+            <Grid ColumnDefinitions="*,Auto">
+              <StackPanel>
+                <TextBlock Classes="label" Text="Essential" />
+                <TextBlock Classes="caption" TextWrapping="Wrap" Text="Essentials are needs like groceries and rent. Everything else counts as non-essential." />
+              </StackPanel>
+              <ToggleSwitch Grid.Column="1" Classes="bare" IsChecked="{Binding EditEssential}" VerticalAlignment="Center" />
+            </Grid>
+
+            <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="{StaticResource SpaceS}">
+              <Button Classes="danger-ghost" Command="{Binding DeleteCommand}" IsVisible="{Binding CanDelete}">
+                <StackPanel Orientation="Horizontal" Spacing="{StaticResource SpaceS}">
+                  <c:IconView Key="trash" />
+                  <TextBlock Text="Delete" />
+                </StackPanel>
+              </Button>
+              <Button Grid.Column="2" Classes="primary" Content="{Binding SaveText}" Command="{Binding SaveCommand}" />
+            </Grid>
+
+            <!-- Rules for this category -->
+            <StackPanel Spacing="{StaticResource SpaceM}" IsVisible="{Binding ShowRules}">
+              <Border Classes="divider" />
+              <TextBlock Classes="subtitle" Text="Rules" />
+
+              <StackPanel Spacing="{StaticResource SpaceS}">
+                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="{StaticResource SpaceS}">
+                  <TextBox Text="{Binding NewRulePattern}" PlaceholderText="Add a rule, e.g. VIRGIN ACTIVE" />
+                  <Button Grid.Column="1" Classes="secondary" Command="{Binding AddRuleCommand}" ToolTip.Tip="Add rule">
+                    <c:IconView Key="plus" />
+                  </Button>
+                </Grid>
+                <ComboBox ItemsSource="{Binding MatchTypes}" SelectedItem="{Binding NewRuleType}" HorizontalAlignment="Stretch"
+                          DisplayMemberBinding="{Binding Label, DataType=vm:MatchTypeOption}" />
+                <TextBlock Classes="caption" Classes.negative="{Binding NewRuleInvalid}" Text="{Binding NewRuleFeedback}" TextWrapping="Wrap" />
+              </StackPanel>
+
+              <ItemsControl ItemsSource="{Binding UserRules}" IsVisible="{Binding HasUserRules}">
+                <ItemsControl.ItemsPanel>
+                  <ItemsPanelTemplate>
+                    <StackPanel Spacing="{StaticResource SpaceXs}" />
+                  </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                  <DataTemplate x:DataType="vm:RuleRow">
+                    <Border Classes="insight positive">
+                      <Grid ColumnDefinitions="*,Auto" ColumnSpacing="{StaticResource SpaceS}">
+                        <StackPanel>
+                          <StackPanel Orientation="Horizontal" Spacing="{StaticResource SpaceS}">
+                            <TextBlock Classes="caption" Text="{Binding MatchText}" />
+                            <TextBlock Text="{Binding Pattern}" Classes="label" TextTrimming="CharacterEllipsis" />
+                          </StackPanel>
+                          <TextBlock Classes="caption" Text="{Binding Detail}" />
+                        </StackPanel>
+                        <Button Grid.Column="1" Classes="icon ghost" ToolTip.Tip="Remove rule"
+                                Command="{Binding $parent[ItemsControl].((vm:CategoriesViewModel)DataContext).RemoveRuleCommand}"
+                                CommandParameter="{Binding}">
+                          <c:IconView Key="trash" />
+                        </Button>
+                      </Grid>
+                    </Border>
+                  </DataTemplate>
+                </ItemsControl.ItemTemplate>
+              </ItemsControl>
+
+              <Expander Header="{Binding BuiltInRulesHeader}" IsVisible="{Binding HasBuiltInRules}">
+                <ItemsControl ItemsSource="{Binding BuiltInRules}">
+                  <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                      <StackPanel Spacing="{StaticResource SpaceXs}" />
+                    </ItemsPanelTemplate>
+                  </ItemsControl.ItemsPanel>
+                  <ItemsControl.ItemTemplate>
+                    <DataTemplate x:DataType="vm:RuleRow">
+                      <Grid ColumnDefinitions="*,Auto" ColumnSpacing="{StaticResource SpaceS}">
+                        <StackPanel>
+                          <StackPanel Orientation="Horizontal" Spacing="{StaticResource SpaceS}">
+                            <TextBlock Classes="caption" Text="{Binding MatchText}" />
+                            <TextBlock Text="{Binding Pattern}" TextTrimming="CharacterEllipsis" />
+                          </StackPanel>
+                          <TextBlock Classes="caption" Text="{Binding Detail}" />
+                        </StackPanel>
+                        <Button Grid.Column="1" Classes="icon ghost" ToolTip.Tip="Remove rule"
+                                Command="{Binding $parent[ItemsControl].((vm:CategoriesViewModel)DataContext).RemoveRuleCommand}"
+                                CommandParameter="{Binding}">
+                          <c:IconView Key="trash" />
+                        </Button>
+                      </Grid>
+                    </DataTemplate>
+                  </ItemsControl.ItemTemplate>
+                </ItemsControl>
+              </Expander>
+            </StackPanel>
+          </StackPanel>
+        </ScrollViewer>
+      </Border>
+    </Grid>
+  </Grid>
+</UserControl>

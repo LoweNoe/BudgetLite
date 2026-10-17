@@ -1,0 +1,285 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:BudgetApp.UI.ViewModels"
+             xmlns:c="using:BudgetApp.UI.Controls"
+             xmlns:ch="using:BudgetApp.UI.Controls.Charts"
+             x:Class="BudgetApp.UI.Views.DashboardView"
+             x:DataType="vm:DashboardViewModel">
+  <Grid>
+    <ScrollViewer IsVisible="{Binding HasData}">
+      <StackPanel MaxWidth="{StaticResource DashboardMaxWidth}" Margin="{StaticResource PagePadding}" Spacing="{StaticResource SpaceXl}">
+
+        <!-- Header with month switcher -->
+        <Grid ColumnDefinitions="*,Auto" Classes="reveal-0">
+          <StackPanel Spacing="{StaticResource SpaceXs}">
+            <TextBlock Classes="display" Text="Dashboard" />
+            <TextBlock Classes="secondary" Text="{Binding MonthCaption}" />
+          </StackPanel>
+          <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="{StaticResource SpaceXs}" VerticalAlignment="Center">
+            <Button Classes="icon secondary" Command="{Binding PreviousMonthCommand}" ToolTip.Tip="Previous month">
+              <c:IconView Key="chevron-left" />
+            </Button>
+            <Button Classes="ghost" Command="{Binding OpenMonthCommand}" ToolTip.Tip="See this month's transactions">
+              <TextBlock Classes="subtitle" Text="{Binding MonthLabel}" />
+            </Button>
+            <Button Classes="icon secondary" Command="{Binding NextMonthCommand}" ToolTip.Tip="Next month">
+              <c:IconView Key="chevron-right" />
+            </Button>
+          </StackPanel>
+        </Grid>
+
+        <!-- Lead insight: the full list lives on the Insights page -->
+        <Border Classes="insight reveal-1" Classes.warning="{Binding LeadInsight.IsWarning}" Classes.positive="{Binding LeadInsight.IsPositive}"
+                IsVisible="{Binding HasInsights}" Padding="{StaticResource CardPadding}">
+          <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="{StaticResource SpaceL}">
+            <Border Classes="category-badge">
+              <c:IconView Key="{Binding LeadInsight.Icon}" />
+            </Border>
+            <StackPanel Grid.Column="1" Spacing="{StaticResource SpaceXs}" VerticalAlignment="Center">
+              <TextBlock Classes="subtitle" Text="{Binding LeadInsight.Text}" TextWrapping="Wrap" />
+              <TextBlock Classes="caption" Text="{Binding InsightsCaption}" TextWrapping="Wrap" />
+            </StackPanel>
+            <Button Grid.Column="2" Classes="secondary" VerticalAlignment="Center" Command="{Binding OpenInsightsCommand}">
+              <StackPanel Orientation="Horizontal" Spacing="{StaticResource SpaceS}">
+                <TextBlock Text="See all insights" />
+                <c:IconView Key="chevron-right" />
+              </StackPanel>
+            </Button>
+          </Grid>
+        </Border>
+        <!-- Headline numbers -->
+        <c:ResponsiveRow Spacing="{StaticResource SpaceL}" BreakWidth="{StaticResource ResponsiveBreak}" Classes="reveal-2">
+          <Border Classes="card interactive">
+            <StackPanel Spacing="{StaticResource SpaceXs}">
+              <TextBlock Classes="caption" Text="Spent" />
+              <c:AnimatedAmount Classes="amount hero negative" Value="{Binding Spent}" Currency="{Binding Currency}" />
+              <Border Classes="chip" Classes.up="{Binding SpentWentUp}" Classes.down="{Binding SpentWentDown}" IsVisible="{Binding HasSpentChange}">
+                <StackPanel Orientation="Horizontal" Spacing="{StaticResource SpaceXs}">
+                  <c:IconView Key="trend-up" IsVisible="{Binding SpentWentUp}" />
+                  <c:IconView Key="trend-down" IsVisible="{Binding SpentWentDown}" />
+                  <TextBlock Text="{Binding SpentChangeText}" />
+                </StackPanel>
+              </Border>
+            </StackPanel>
+          </Border>
+          <Border Classes="card interactive">
+            <StackPanel Spacing="{StaticResource SpaceXs}">
+              <TextBlock Classes="caption" Text="Money in" />
+              <c:AnimatedAmount Classes="amount hero positive" Value="{Binding Income}" Currency="{Binding Currency}" />
+              <TextBlock Classes="caption" Text="{Binding IncomeCaption}" />
+            </StackPanel>
+          </Border>
+          <Border Classes="card interactive">
+            <StackPanel Spacing="{StaticResource SpaceXs}">
+              <TextBlock Classes="caption" Text="Non-essential" />
+              <c:AnimatedAmount Classes="amount hero" Value="{Binding NonEssential}" Currency="{Binding Currency}" />
+              <TextBlock Classes="caption" Text="{Binding NonEssentialShare}" />
+            </StackPanel>
+          </Border>
+          <Border Classes="card interactive" IsVisible="{Binding HasForecast}">
+            <StackPanel Spacing="{StaticResource SpaceXs}">
+              <TextBlock Classes="caption" Text="Projected at payday" />
+              <c:AnimatedAmount Classes="amount hero" Classes.negative="{Binding ForecastIsWarning}" Value="{Binding ForecastEnd}" Currency="{Binding Currency}" />
+              <TextBlock Classes="caption" Classes.warning-text="{Binding ForecastIsWarning}" Text="{Binding ForecastCaption}" />
+              <TextBlock Classes="caption" Text="{Binding ForecastRange}" />
+            </StackPanel>
+          </Border>
+        </c:ResponsiveRow>
+
+        <!-- Budgets -->
+        <Border Classes="card reveal-3">
+          <StackPanel Spacing="{StaticResource SpaceM}">
+            <Grid ColumnDefinitions="*,Auto">
+              <StackPanel Spacing="{StaticResource SpaceXs}">
+                <TextBlock Classes="subtitle" Text="Budgets" />
+                <TextBlock Classes="caption" Text="{Binding BudgetsCaption}" IsVisible="{Binding HasBudgets}" />
+              </StackPanel>
+              <Button Grid.Column="1" Classes="link" Content="Manage budgets" Command="{Binding OpenBudgetsCommand}" VerticalAlignment="Top" />
+            </Grid>
+            <ItemsControl ItemsSource="{Binding BudgetRows}" IsVisible="{Binding HasBudgets}">
+              <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                  <UniformGrid Columns="2" />
+                </ItemsPanelTemplate>
+              </ItemsControl.ItemsPanel>
+              <ItemsControl.ItemTemplate>
+                <DataTemplate x:DataType="vm:DashboardBudgetRow">
+                  <StackPanel Spacing="{StaticResource SpaceXs}" Margin="{StaticResource LegendRowPadding}">
+                    <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="{StaticResource SpaceS}">
+                      <c:ColourDot Token="{Binding Colour}" />
+                      <TextBlock Grid.Column="1" Text="{Binding Name}" TextTrimming="CharacterEllipsis" />
+                      <TextBlock Grid.Column="2" Classes="amount caption" Text="{Binding AmountText}" />
+                    </Grid>
+                    <ch:BudgetBar Spent="{Binding Used}" Projected="{Binding Projected}" IsOver="{Binding IsOver}" IsWatch="{Binding IsWatch}" />
+                  </StackPanel>
+                </DataTemplate>
+              </ItemsControl.ItemTemplate>
+            </ItemsControl>
+            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="{StaticResource SpaceL}" IsVisible="{Binding !HasBudgets}">
+              <TextBlock Classes="secondary" TextWrapping="Wrap" VerticalAlignment="Center"
+                         Text="Set monthly limits for the categories you care about and we'll warn you before you overspend." />
+              <Button Grid.Column="1" Classes="secondary" Content="Set up budgets" Command="{Binding OpenBudgetsCommand}" />
+            </Grid>
+          </StackPanel>
+        </Border>
+
+        <!-- Spending breakdown and trend -->
+        <c:ResponsiveRow Spacing="{StaticResource SpaceL}" BreakWidth="{StaticResource ResponsiveBreak}" Classes="reveal-4">
+          <Border Classes="card" c:ResponsiveRow.Weight="1.55">
+            <StackPanel Spacing="{StaticResource SpaceL}">
+              <Grid ColumnDefinitions="*,Auto">
+                <TextBlock Classes="subtitle" Text="Where it went" />
+                <TextBlock Grid.Column="1" Classes="caption" Text="vs last month" VerticalAlignment="Center" />
+              </Grid>
+              <Grid ColumnDefinitions="Auto,*" ColumnSpacing="{StaticResource SpaceXl}" IsVisible="{Binding HasSpending}">
+                <ch:DonutChart Width="{StaticResource DonutSize}" Height="{StaticResource DonutSize}" VerticalAlignment="Top"
+                               Items="{Binding Slices}" CenterLabel="Spent" CenterValue="{Binding SpentText}" />
+                <ItemsControl Grid.Column="1" ItemsSource="{Binding Legend}">
+                  <ItemsControl.ItemTemplate>
+                    <DataTemplate x:DataType="vm:LegendRow">
+                      <Button Classes="row"
+                              Command="{Binding $parent[ItemsControl].((vm:DashboardViewModel)DataContext).OpenCategoryCommand}"
+                              CommandParameter="{Binding}"
+                              ToolTip.Tip="See these transactions">
+                        <Grid ColumnDefinitions="Auto,*,Auto,Auto" ColumnSpacing="{StaticResource SpaceS}">
+                          <c:ColourDot Token="{Binding Colour}" />
+                          <TextBlock Grid.Column="1" Text="{Binding Name}" TextTrimming="CharacterEllipsis" VerticalAlignment="Center" />
+                          <TextBlock Grid.Column="2" Classes="amount" Text="{Binding AmountText}" VerticalAlignment="Center" />
+                          <Border Grid.Column="3" Classes="chip" Classes.up="{Binding IsUp}" Classes.down="{Binding IsDown}" VerticalAlignment="Center">
+                            <TextBlock Text="{Binding ChangeText}" />
+                          </Border>
+                        </Grid>
+                      </Button>
+                    </DataTemplate>
+                  </ItemsControl.ItemTemplate>
+                </ItemsControl>
+              </Grid>
+              <TextBlock Classes="secondary" Text="No spending in this month." IsVisible="{Binding !HasSpending}" />
+            </StackPanel>
+          </Border>
+
+          <Border Classes="card">
+            <StackPanel Spacing="{StaticResource SpaceL}">
+              <TextBlock Classes="subtitle" Text="Monthly spending" />
+              <ch:BarChart Height="{StaticResource TrendChartHeight}" Items="{Binding TrendBars}"
+                           BarCommand="{Binding SelectMonthCommand}" Currency="{Binding Currency}" />
+              <StackPanel Orientation="Horizontal" Spacing="{StaticResource SpaceL}">
+                <StackPanel Orientation="Horizontal" Spacing="{StaticResource SpaceXs}">
+                  <Border Classes="legend-key" Background="{DynamicResource AccentBrush}" />
+                  <TextBlock Classes="caption" Text="Essential and other" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Spacing="{StaticResource SpaceXs}">
+                  <Border Classes="legend-key" Background="{DynamicResource NegativeBrush}" />
+                  <TextBlock Classes="caption" Text="Non-essential" />
+                </StackPanel>
+              </StackPanel>
+              <c:TipCard IsVisible="{Binding ShowTrendTip}"
+                         Text="Tip: click a month to see its breakdown."
+                         DismissCommand="{Binding DismissTrendTipCommand}" />
+            </StackPanel>
+          </Border>
+        </c:ResponsiveRow>
+
+        <!-- Payday forecast -->
+        <Border Classes="card reveal-5">
+          <StackPanel Spacing="{StaticResource SpaceL}">
+            <Grid ColumnDefinitions="*,Auto">
+              <TextBlock Classes="subtitle" Text="Payday forecast" />
+              <c:IconView Grid.Column="1" Key="calendar" Foreground="{DynamicResource TextSecondaryBrush}" />
+            </Grid>
+            <StackPanel Spacing="{StaticResource SpaceL}" IsVisible="{Binding HasForecast}">
+              <StackPanel Spacing="{StaticResource SpaceXs}">
+                <TextBlock Classes="label" Text="{Binding PaydayDetail}" TextWrapping="Wrap" />
+                <TextBlock Classes="secondary" Text="{Binding ForecastSummary}" TextWrapping="Wrap" />
+              </StackPanel>
+              <ch:LineChart Height="{StaticResource ForecastChartHeight}" Items="{Binding ForecastPoints}" Currency="{Binding Currency}" />
+              <ItemsControl ItemsSource="{Binding UpcomingDebits}" IsVisible="{Binding HasUpcomingDebits}">
+                <ItemsControl.ItemsPanel>
+                  <ItemsPanelTemplate>
+                    <WrapPanel ItemSpacing="{StaticResource SpaceS}" LineSpacing="{StaticResource SpaceS}" />
+                  </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                  <DataTemplate x:DataType="vm:UpcomingRow">
+                    <Border Classes="badge" Classes.warning="{Binding AtRisk}" Classes.income="{Binding IsIncome}">
+                      <StackPanel Orientation="Horizontal" Spacing="{StaticResource SpaceXs}">
+                        <TextBlock Text="{Binding DateText}" />
+                        <TextBlock Text="·" />
+                        <TextBlock Text="{Binding Merchant}" />
+                        <TextBlock Text="{Binding AmountText}" />
+                        <TextBlock Text="· might bounce" IsVisible="{Binding AtRisk}" />
+                      </StackPanel>
+                    </Border>
+                  </DataTemplate>
+                </ItemsControl.ItemTemplate>
+              </ItemsControl>
+            </StackPanel>
+            <TextBlock Classes="secondary" Text="{Binding ForecastUnavailable}" TextWrapping="Wrap" IsVisible="{Binding !HasForecast}" />
+          </StackPanel>
+        </Border>
+
+        <!-- Recurring charges and bank fees -->
+        <c:ResponsiveRow Spacing="{StaticResource SpaceL}" BreakWidth="{StaticResource ResponsiveBreak}" Classes="reveal-5">
+          <Border Classes="card" c:ResponsiveRow.Weight="1.6">
+            <StackPanel Spacing="{StaticResource SpaceM}">
+              <Grid ColumnDefinitions="*,Auto">
+                <TextBlock Classes="subtitle" Text="Recurring payments" />
+                <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="{StaticResource SpaceXs}" IsVisible="{Binding HasRecurring}">
+                  <c:AnimatedAmount Classes="amount" Value="{Binding RecurringMonthly}" Currency="{Binding Currency}" WholeUnits="True" />
+                  <TextBlock Classes="secondary" Text="a month" />
+                </StackPanel>
+              </Grid>
+              <ItemsControl ItemsSource="{Binding Recurring}" IsVisible="{Binding HasRecurring}">
+                <ItemsControl.ItemsPanel>
+                  <ItemsPanelTemplate>
+                    <StackPanel Spacing="{StaticResource SpaceXs}" />
+                  </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                  <DataTemplate x:DataType="vm:RecurringRow">
+                    <Grid ColumnDefinitions="Auto,*,Auto,Auto" ColumnSpacing="{StaticResource SpaceM}" Margin="{StaticResource LegendRowPadding}">
+                      <c:IconView Key="{Binding Icon}" Foreground="{DynamicResource TextSecondaryBrush}" VerticalAlignment="Center" />
+                      <StackPanel Grid.Column="1">
+                        <TextBlock Text="{Binding Merchant}" TextTrimming="CharacterEllipsis" />
+                        <TextBlock Classes="caption" Text="{Binding Detail}" />
+                      </StackPanel>
+                      <Border Grid.Column="2" Classes="badge" Classes.accent="{Binding IsSubscription}">
+                        <TextBlock Text="{Binding KindText}" />
+                      </Border>
+                      <TextBlock Grid.Column="3" Classes="amount" Text="{Binding AmountText}" VerticalAlignment="Center" />
+                    </Grid>
+                  </DataTemplate>
+                </ItemsControl.ItemTemplate>
+              </ItemsControl>
+              <TextBlock Classes="secondary" TextWrapping="Wrap" IsVisible="{Binding !HasRecurring}"
+                         Text="Nothing recurring spotted yet. Import two or more months and we'll find your subscriptions and debit orders." />
+            </StackPanel>
+          </Border>
+
+          <Border Classes="card interactive">
+            <StackPanel Spacing="{StaticResource SpaceXs}">
+              <Grid ColumnDefinitions="*,Auto">
+                <TextBlock Classes="subtitle" Text="Bank fees" />
+                <c:IconView Grid.Column="1" Key="landmark" Foreground="{DynamicResource TextSecondaryBrush}" />
+              </Grid>
+              <c:AnimatedAmount Classes="amount hero" Value="{Binding FeesThisMonth}" Currency="{Binding Currency}" />
+              <StackPanel Orientation="Horizontal" Spacing="{StaticResource SpaceXs}">
+                <c:AnimatedAmount Classes="caption" Value="{Binding FeesThisYear}" Currency="{Binding Currency}" />
+                <TextBlock Classes="caption" Text="so far this year" />
+              </StackPanel>
+              <TextBlock Classes="secondary" Text="{Binding FeesSentence}" TextWrapping="Wrap" />
+            </StackPanel>
+          </Border>
+        </c:ResponsiveRow>
+      </StackPanel>
+    </ScrollViewer>
+
+    <c:EmptyState IsVisible="{Binding !HasData}"
+                  Classes="appear"
+                  Icon="pie"
+                  Title="Your dashboard is waiting"
+                  Message="Import a bank statement and we'll show you where your money goes, what repeats every month and how far it stretches to payday."
+                  ActionText="Import a statement"
+                  Command="{Binding GoToImportCommand}" />
+  </Grid>
+</UserControl>

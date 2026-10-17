@@ -1,0 +1,102 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <!--
+    Text-on-colour pairs are tuned for WCAG AA. In light mode the brand mint, coral and amber are
+    too pale for text (under 3:1 on white), so text uses the darker *TextBrush variants and the
+    brand tones are kept for fills, icons and charts.
+  -->
+  <ResourceDictionary.ThemeDictionaries>
+    <ResourceDictionary x:Key="Light">
+      <SolidColorBrush x:Key="BackgroundBrush" Color="#FFFFFF" />
+      <SolidColorBrush x:Key="SurfaceBrush" Color="#F6FAF8" />
+      <SolidColorBrush x:Key="BorderBrush" Color="#E3ECE8" />
+      <SolidColorBrush x:Key="TextPrimaryBrush" Color="#1A2420" />
+      <SolidColorBrush x:Key="TextSecondaryBrush" Color="#5F6E68" />
+      <SolidColorBrush x:Key="AccentBrush" Color="#3EB489" />
+      <SolidColorBrush x:Key="AccentHoverBrush" Color="#34A07A" />
+      <SolidColorBrush x:Key="AccentSubtleBrush" Color="#E6F6EF" />
+      <SolidColorBrush x:Key="OnAccentBrush" Color="#1A2420" />
+      <SolidColorBrush x:Key="AccentTextBrush" Color="#17734F" />
+      <SolidColorBrush x:Key="PositiveTextBrush" Color="#17734F" />
+      <SolidColorBrush x:Key="NegativeBrush" Color="#E07A6B" />
+      <SolidColorBrush x:Key="NegativeTextBrush" Color="#B2493B" />
+      <SolidColorBrush x:Key="WarningBrush" Color="#E0A84B" />
+      <SolidColorBrush x:Key="WarningTextBrush" Color="#8A5A0F" />
+      <SolidColorBrush x:Key="WarningSubtleBrush" Color="#FBF3E4" />
+
+      <SolidColorBrush x:Key="Chart1Brush" Color="#3EB489" />
+      <SolidColorBrush x:Key="Chart2Brush" Color="#2A7F62" />
+      <SolidColorBrush x:Key="Chart3Brush" Color="#3D8FA8" />
+      <SolidColorBrush x:Key="Chart4Brush" Color="#7FD1B0" />
+      <SolidColorBrush x:Key="Chart5Brush" Color="#E07A6B" />
+      <SolidColorBrush x:Key="Chart6Brush" Color="#8C7BC0" />
+      <SolidColorBrush x:Key="Chart7Brush" Color="#E0A84B" />
+      <SolidColorBrush x:Key="Chart8Brush" Color="#94A39C" />
+      <SolidColorBrush x:Key="Chart9Brush" Color="#5B7DB1" />
+      <SolidColorBrush x:Key="Chart10Brush" Color="#C46A9A" />
+      <SolidColorBrush x:Key="Chart11Brush" Color="#A7B85A" />
+      <SolidColorBrush x:Key="Chart12Brush" Color="#4FB3BF" />
+
+      <SolidColorBrush x:Key="ScrimBrush" Color="#661A2420" />
+      <SolidColorBrush x:Key="ElevatedBrush" Color="#FFFFFF" />
+      <SolidColorBrush x:Key="DropZoneBrush" Color="#F0F8F4" />
+      <SolidColorBrush x:Key="RowHoverBrush" Color="#F1F7F4" />
+
+      <!-- Fluent expander, mapped onto our surfaces -->
+      <SolidColorBrush x:Key="ExpanderHeaderBackground" Color="#F6FAF8" />
+      <SolidColorBrush x:Key="ExpanderHeaderBackgroundPointerOver" Color="#E6F6EF" />
+      <SolidColorBrush x:Key="ExpanderHeaderBackgroundPressed" Color="#E6F6EF" />
+      <SolidColorBrush x:Key="ExpanderHeaderBorderBrush" Color="#E3ECE8" />
+      <SolidColorBrush x:Key="ExpanderHeaderBorderBrushPointerOver" Color="#E3ECE8" />
+      <SolidColorBrush x:Key="ExpanderHeaderBorderBrushPressed" Color="#E3ECE8" />
+      <SolidColorBrush x:Key="ExpanderContentBackground" Color="Transparent" />
+      <SolidColorBrush x:Key="ExpanderContentBorderBrush" Color="Transparent" />
+    </ResourceDictionary>
+
+    <ResourceDictionary x:Key="Dark">
+      <SolidColorBrush x:Key="BackgroundBrush" Color="#111614" />
+      <SolidColorBrush x:Key="SurfaceBrush" Color="#1A201D" />
+      <SolidColorBrush x:Key="BorderBrush" Color="#2A332F" />
+      <SolidColorBrush x:Key="TextPrimaryBrush" Color="#EEF3F1" />
+      <SolidColorBrush x:Key="TextSecondaryBrush" Color="#9AA8A2" />
+      <SolidColorBrush x:Key="AccentBrush" Color="#4CC79A" />
+      <SolidColorBrush x:Key="AccentHoverBrush" Color="#5ED4A8" />
+      <SolidColorBrush x:Key="AccentSubtleBrush" Color="#1F3A30" />
+      <SolidColorBrush x:Key="OnAccentBrush" Color="#111614" />
+      <SolidColorBrush x:Key="AccentTextBrush" Color="#4CC79A" />
+      <SolidColorBrush x:Key="PositiveTextBrush" Color="#4CC79A" />
+      <SolidColorBrush x:Key="NegativeBrush" Color="#F0907F" />
+      <SolidColorBrush x:Key="NegativeTextBrush" Color="#F0907F" />
+      <SolidColorBrush x:Key="WarningBrush" Color="#E0A84B" />
+      <SolidColorBrush x:Key="WarningTextBrush" Color="#E0A84B" />
+      <SolidColorBrush x:Key="WarningSubtleBrush" Color="#2E2717" />
+
+      <SolidColorBrush x:Key="Chart1Brush" Color="#4CC79A" />
+      <SolidColorBrush x:Key="Chart2Brush" Color="#3FA37F" />
+      <SolidColorBrush x:Key="Chart3Brush" Color="#5AAFC8" />
+      <SolidColorBrush x:Key="Chart4Brush" Color="#9BE0C3" />
+      <SolidColorBrush x:Key="Chart5Brush" Color="#F0907F" />
+      <SolidColorBrush x:Key="Chart6Brush" Color="#A595D6" />
+      <SolidColorBrush x:Key="Chart7Brush" Color="#E8B862" />
+      <SolidColorBrush x:Key="Chart8Brush" Color="#AAB8B1" />
+      <SolidColorBrush x:Key="Chart9Brush" Color="#7C9BD0" />
+      <SolidColorBrush x:Key="Chart10Brush" Color="#DA86B2" />
+      <SolidColorBrush x:Key="Chart11Brush" Color="#BCCB72" />
+      <SolidColorBrush x:Key="Chart12Brush" Color="#6CC8D3" />
+
+      <SolidColorBrush x:Key="ScrimBrush" Color="#99050807" />
+      <SolidColorBrush x:Key="ElevatedBrush" Color="#212825" />
+      <SolidColorBrush x:Key="DropZoneBrush" Color="#16201C" />
+      <SolidColorBrush x:Key="RowHoverBrush" Color="#222B27" />
+
+      <SolidColorBrush x:Key="ExpanderHeaderBackground" Color="#1A201D" />
+      <SolidColorBrush x:Key="ExpanderHeaderBackgroundPointerOver" Color="#1F3A30" />
+      <SolidColorBrush x:Key="ExpanderHeaderBackgroundPressed" Color="#1F3A30" />
+      <SolidColorBrush x:Key="ExpanderHeaderBorderBrush" Color="#2A332F" />
+      <SolidColorBrush x:Key="ExpanderHeaderBorderBrushPointerOver" Color="#2A332F" />
+      <SolidColorBrush x:Key="ExpanderHeaderBorderBrushPressed" Color="#2A332F" />
+      <SolidColorBrush x:Key="ExpanderContentBackground" Color="Transparent" />
+      <SolidColorBrush x:Key="ExpanderContentBorderBrush" Color="Transparent" />
+    </ResourceDictionary>
+  </ResourceDictionary.ThemeDictionaries>
+</ResourceDictionary>

@@ -1,0 +1,57 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:BudgetApp.UI.ViewModels"
+             xmlns:c="using:BudgetApp.UI.Controls"
+             x:Class="BudgetApp.UI.Views.ShellView"
+             x:DataType="vm:ShellViewModel">
+  <Grid ColumnDefinitions="Auto,*">
+    <Border Width="{StaticResource SidebarWidth}"
+            Background="{DynamicResource SurfaceBrush}"
+            BorderBrush="{DynamicResource BorderBrush}"
+            BorderThickness="0,0,1,0"
+            Padding="{StaticResource SidebarPadding}">
+      <DockPanel>
+        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Spacing="{StaticResource SpaceS}" Margin="{StaticResource NavItemPadding}">
+          <c:IconView Key="wallet" Foreground="{DynamicResource AccentTextBrush}" />
+          <TextBlock Classes="subtitle" Text="BudgetLite" VerticalAlignment="Center" />
+        </StackPanel>
+
+        <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" Spacing="{StaticResource SpaceS}" Margin="{StaticResource NavItemPadding}">
+          <c:IconView Key="shield" Foreground="{DynamicResource TextSecondaryBrush}" />
+          <TextBlock Classes="caption" Text="Stays on this computer" VerticalAlignment="Center" />
+        </StackPanel>
+
+        <ListBox Classes="nav"
+                 Margin="{StaticResource SectionGap}"
+                 ItemsSource="{Binding NavItems}"
+                 SelectedItem="{Binding SelectedNav}">
+          <ListBox.ItemTemplate>
+            <DataTemplate x:DataType="vm:NavItem">
+              <Panel>
+                <Border Classes="indicator" />
+                <StackPanel Orientation="Horizontal" Spacing="{StaticResource SpaceM}">
+                  <c:IconView Key="{Binding Icon}" />
+                  <TextBlock Text="{Binding Title}" VerticalAlignment="Center" />
+                </StackPanel>
+              </Panel>
+            </DataTemplate>
+          </ListBox.ItemTemplate>
+        </ListBox>
+      </DockPanel>
+    </Border>
+
+    <Grid Grid.Column="1" RowDefinitions="Auto,*">
+      <StackPanel Orientation="Horizontal"
+                  HorizontalAlignment="Right"
+                  Spacing="{StaticResource SpaceS}"
+                  Margin="{StaticResource TopBarPadding}"
+                  ToolTip.Tip="Switch between light and dark">
+        <c:IconView Key="sun" Foreground="{DynamicResource TextSecondaryBrush}" VerticalAlignment="Center" />
+        <ToggleSwitch Classes="bare" IsChecked="{Binding IsDarkMode}" />
+        <c:IconView Key="moon" Foreground="{DynamicResource TextSecondaryBrush}" VerticalAlignment="Center" />
+      </StackPanel>
+
+      <TransitioningContentControl Grid.Row="1" Content="{Binding CurrentPage}" />
+    </Grid>
+  </Grid>
+</UserControl>

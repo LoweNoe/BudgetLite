@@ -1,0 +1,32 @@
+<Application xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="using:BudgetApp.UI"
+             x:Class="BudgetApp.UI.App"
+             RequestedThemeVariant="Default">
+
+  <Application.DataTemplates>
+    <local:ViewLocator />
+  </Application.DataTemplates>
+
+  <Application.Resources>
+    <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries>
+        <ResourceInclude Source="avares://BudgetApp/Themes/Palette.axaml" />
+        <ResourceInclude Source="avares://BudgetApp/Themes/Tokens.axaml" />
+        <ResourceInclude Source="avares://BudgetApp/Themes/Icons.axaml" />
+        <ResourceInclude Source="avares://BudgetApp/Views/SharedTemplates.axaml" />
+      </ResourceDictionary.MergedDictionaries>
+    </ResourceDictionary>
+  </Application.Resources>
+
+  <Application.Styles>
+    <FluentTheme>
+      <FluentTheme.Palettes>
+        <ColorPaletteResources x:Key="Light" Accent="#3EB489" RegionColor="#FFFFFF" ErrorText="#B2493B" />
+        <ColorPaletteResources x:Key="Dark" Accent="#4CC79A" RegionColor="#111614" ErrorText="#F0907F" />
+      </FluentTheme.Palettes>
+    </FluentTheme>
+    <StyleInclude Source="avares://BudgetApp/Styles/Controls.axaml" />
+    <StyleInclude Source="avares://BudgetApp/Styles/Animations.axaml" />
+  </Application.Styles>
+</Application>

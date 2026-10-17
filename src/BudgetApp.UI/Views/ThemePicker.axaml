@@ -1,0 +1,27 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:BudgetApp.UI.ViewModels"
+             xmlns:c="using:BudgetApp.UI.Controls"
+             x:Class="BudgetApp.UI.Views.ThemePicker"
+             x:DataType="vm:ThemeChoiceViewModel">
+  <StackPanel Spacing="{StaticResource SpaceS}">
+    <RadioButton IsChecked="{Binding IsLight}">
+      <StackPanel Orientation="Horizontal" Spacing="{StaticResource SpaceS}">
+        <c:IconView Key="sun" />
+        <TextBlock Text="Light" VerticalAlignment="Center" />
+      </StackPanel>
+    </RadioButton>
+    <RadioButton IsChecked="{Binding IsDark}">
+      <StackPanel Orientation="Horizontal" Spacing="{StaticResource SpaceS}">
+        <c:IconView Key="moon" />
+        <TextBlock Text="Dark" VerticalAlignment="Center" />
+      </StackPanel>
+    </RadioButton>
+    <RadioButton IsChecked="{Binding IsSystem}">
+      <StackPanel Orientation="Horizontal" Spacing="{StaticResource SpaceS}">
+        <c:IconView Key="monitor" />
+        <TextBlock Text="Follow system" VerticalAlignment="Center" />
+      </StackPanel>
+    </RadioButton>
+  </StackPanel>
+</UserControl>

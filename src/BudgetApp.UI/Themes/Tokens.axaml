@@ -1,0 +1,85 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <FontFamily x:Key="ContentControlThemeFontFamily">fonts:Inter#Inter, $Default</FontFamily>
+
+  <x:Double x:Key="FontSizeDisplay">28</x:Double>
+  <x:Double x:Key="FontSizeTitle">20</x:Double>
+  <x:Double x:Key="FontSizeSubtitle">16</x:Double>
+  <x:Double x:Key="FontSizeBody">14</x:Double>
+  <x:Double x:Key="FontSizeCaption">12</x:Double>
+  <x:Double x:Key="ControlContentThemeFontSize">14</x:Double>
+
+  <x:Double x:Key="SpaceXs">4</x:Double>
+  <x:Double x:Key="SpaceS">8</x:Double>
+  <x:Double x:Key="SpaceM">12</x:Double>
+  <x:Double x:Key="SpaceL">16</x:Double>
+  <x:Double x:Key="SpaceXl">24</x:Double>
+  <x:Double x:Key="SpaceXxl">32</x:Double>
+
+  <Thickness x:Key="PagePadding">40,32,40,40</Thickness>
+  <Thickness x:Key="CardPadding">20</Thickness>
+  <Thickness x:Key="ControlPadding">16,8</Thickness>
+  <Thickness x:Key="CompactPadding">8</Thickness>
+  <Thickness x:Key="RowPadding">12,10</Thickness>
+  <Thickness x:Key="NavItemPadding">12,9</Thickness>
+  <Thickness x:Key="SidebarPadding">12,20</Thickness>
+  <Thickness x:Key="TopBarPadding">40,16,24,0</Thickness>
+  <Thickness x:Key="SectionGap">0,8,0,0</Thickness>
+
+  <CornerRadius x:Key="CardRadius">8</CornerRadius>
+  <CornerRadius x:Key="ControlRadius">6</CornerRadius>
+  <CornerRadius x:Key="PillRadius">999</CornerRadius>
+  <CornerRadius x:Key="ControlCornerRadius">6</CornerRadius>
+  <CornerRadius x:Key="OverlayCornerRadius">8</CornerRadius>
+
+  <x:Double x:Key="SidebarWidth">220</x:Double>
+  <x:Double x:Key="ContentMaxWidth">960</x:Double>
+  <x:Double x:Key="WizardWidth">760</x:Double>
+  <x:Double x:Key="IconSize">18</x:Double>
+  <x:Double x:Key="IconSizeLarge">32</x:Double>
+  <x:Double x:Key="IconBadgeSize">72</x:Double>
+  <x:Double x:Key="StepBadgeSize">26</x:Double>
+  <x:Double x:Key="DotSize">8</x:Double>
+  <x:Double x:Key="ColourDotSize">10</x:Double>
+  <x:Double x:Key="FieldWidth">280</x:Double>
+  <x:Double x:Key="AmountColumnWidth">140</x:Double>
+  <x:Double x:Key="PreviewListHeight">380</x:Double>
+  <x:Double x:Key="PreviewListHeightCompact">220</x:Double>
+  <x:Double x:Key="WizardBodyHeight">380</x:Double>
+  <x:Double x:Key="CheckIconSize">14</x:Double>
+  <x:Double x:Key="WindowMinWidth">960</x:Double>
+  <x:Double x:Key="WindowMinHeight">640</x:Double>
+
+  <GridLength x:Key="DateColumnLength">104</GridLength>
+  <GridLength x:Key="CategoryColumnLength">200</GridLength>
+  <GridLength x:Key="AmountColumnLength">140</GridLength>
+  <GridLength x:Key="BarColumnLength">160</GridLength>
+
+  <x:Double x:Key="DashboardMaxWidth">1120</x:Double>
+  <x:Double x:Key="DonutSize">200</x:Double>
+  <x:Double x:Key="TrendChartHeight">220</x:Double>
+  <x:Double x:Key="ForecastChartHeight">200</x:Double>
+  <x:Double x:Key="ResponsiveBreak">760</x:Double>
+  <x:Double x:Key="ToastWidth">360</x:Double>
+  <x:Double x:Key="DialogWidth">440</x:Double>
+  <x:Double x:Key="DropZoneHeight">220</x:Double>
+  <x:Double x:Key="EditorWidth">400</x:Double>
+  <x:Double x:Key="SwatchSize">28</x:Double>
+  <x:Double x:Key="IconTileSize">36</x:Double>
+  <x:Double x:Key="IndicatorWidth">3</x:Double>
+  <x:Double x:Key="IndicatorHeight">18</x:Double>
+  <x:Double x:Key="DotActiveWidth">22</x:Double>
+  <x:Double x:Key="BadgeIconSize">14</x:Double>
+
+  <Thickness x:Key="WizardPadding">40,32</Thickness>
+  <Thickness x:Key="WizardMargin">24</Thickness>
+  <Thickness x:Key="ToastPadding">16,12</Thickness>
+  <Thickness x:Key="ToastHostMargin">24</Thickness>
+  <Thickness x:Key="DialogPadding">28,24</Thickness>
+  <Thickness x:Key="PillPadding">8,2</Thickness>
+  <Thickness x:Key="IndicatorMargin">-10,0,0,0</Thickness>
+  <Thickness x:Key="LegendRowPadding">8,6</Thickness>
+  <Thickness x:Key="ScrollGutter">0,0,14,0</Thickness>
+  <Thickness x:Key="ChipPadding">10,6</Thickness>
+  <Thickness x:Key="ChipMargin">0,0,8,8</Thickness>
+</ResourceDictionary>

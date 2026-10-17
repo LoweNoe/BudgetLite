@@ -1,0 +1,103 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:BudgetApp.UI.ViewModels"
+             xmlns:c="using:BudgetApp.UI.Controls"
+             x:Class="BudgetApp.UI.Views.TransactionsView"
+             x:DataType="vm:TransactionsViewModel">
+  <Grid>
+    <Grid RowDefinitions="Auto,Auto,Auto,*"
+          RowSpacing="{StaticResource SpaceL}"
+          MaxWidth="{StaticResource DashboardMaxWidth}"
+          Margin="{StaticResource PagePadding}"
+          IsVisible="{Binding HasTransactions}">
+      <Grid ColumnDefinitions="*,Auto" Classes="reveal-0">
+        <StackPanel Spacing="{StaticResource SpaceXs}">
+          <TextBlock Classes="display" Text="Transactions" />
+          <TextBlock Classes="secondary" Text="{Binding ResultSummary}" />
+        </StackPanel>
+        <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="{StaticResource SpaceXl}" VerticalAlignment="Bottom">
+          <StackPanel>
+            <TextBlock Classes="caption" Text="Money out" HorizontalAlignment="Right" />
+            <c:AnimatedAmount Classes="amount subtitle" Value="{Binding MoneyOut}" Currency="{Binding Currency}" HorizontalAlignment="Right" />
+          </StackPanel>
+          <StackPanel>
+            <TextBlock Classes="caption" Text="Money in" HorizontalAlignment="Right" />
+            <c:AnimatedAmount Classes="amount subtitle positive" Value="{Binding MoneyIn}" Currency="{Binding Currency}" HorizontalAlignment="Right" />
+          </StackPanel>
+        </StackPanel>
+      </Grid>
+
+      <Grid Grid.Row="1" ColumnDefinitions="*,Auto,Auto,Auto,Auto" ColumnSpacing="{StaticResource SpaceM}" Classes="reveal-1">
+        <TextBox Text="{Binding SearchText}" PlaceholderText="Search by description or amount">
+          <TextBox.InnerLeftContent>
+            <c:IconView Key="search" Foreground="{DynamicResource TextSecondaryBrush}" Margin="{StaticResource CompactPadding}" />
+          </TextBox.InnerLeftContent>
+        </TextBox>
+        <ComboBox Grid.Column="1"
+                  ItemsSource="{Binding MonthFilters}"
+                  SelectedItem="{Binding SelectedMonthFilter}"
+                  DisplayMemberBinding="{Binding Label, DataType=vm:MonthOption}" />
+        <ComboBox Grid.Column="2"
+                  ItemsSource="{Binding CategoryFilters}"
+                  SelectedItem="{Binding SelectedCategoryFilter}"
+                  ItemTemplate="{StaticResource CategoryOptionTemplate}" />
+        <ComboBox Grid.Column="3"
+                  ItemsSource="{Binding Directions}"
+                  SelectedItem="{Binding SelectedDirection}" />
+        <Button Grid.Column="4" Classes="icon ghost" Command="{Binding ClearFiltersCommand}"
+                IsVisible="{Binding IsFiltered}" ToolTip.Tip="Clear filters">
+          <c:IconView Key="x" />
+        </Button>
+      </Grid>
+
+      <StackPanel Grid.Row="2" Spacing="{StaticResource SpaceS}">
+        <c:TipCard IsVisible="{Binding ShowCategoryTip}"
+                   Classes="appear"
+                   Text="Tip: change a category and we'll remember it for next time."
+                   DismissCommand="{Binding DismissCategoryTipCommand}" />
+        <Border Classes="banner appear" IsVisible="{Binding HasCorrection}">
+          <Grid ColumnDefinitions="Auto,*,Auto,Auto" ColumnSpacing="{StaticResource SpaceM}">
+            <c:IconView Key="tag" Foreground="{DynamicResource AccentTextBrush}" VerticalAlignment="Center" />
+            <TextBlock Grid.Column="1" Text="{Binding Correction.Message}" TextWrapping="Wrap" VerticalAlignment="Center" />
+            <Button Grid.Column="2" Classes="ghost" Content="Just this one" Command="{Binding DismissCorrectionCommand}" />
+            <Button Grid.Column="3" Classes="primary" Content="Remember this" Command="{Binding AcceptCorrectionCommand}" />
+          </Grid>
+        </Border>
+      </StackPanel>
+
+      <DockPanel Grid.Row="3" Classes="reveal-2">
+        <Grid DockPanel.Dock="Top" ColumnSpacing="{StaticResource SpaceL}" Margin="{StaticResource RowPadding}">
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="{StaticResource DateColumnLength}" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="{StaticResource CategoryColumnLength}" />
+            <ColumnDefinition Width="{StaticResource AmountColumnLength}" />
+          </Grid.ColumnDefinitions>
+          <TextBlock Classes="caption" Text="Date" />
+          <TextBlock Grid.Column="1" Classes="caption" Text="Description" />
+          <TextBlock Grid.Column="2" Classes="caption" Text="Category" />
+          <TextBlock Grid.Column="3" Classes="caption" Text="Amount" HorizontalAlignment="Right" />
+        </Grid>
+        <Border DockPanel.Dock="Top" Classes="divider" />
+        <Panel>
+          <ListBox Classes="rows" ItemsSource="{Binding VisibleRows}" ItemTemplate="{StaticResource TransactionRowTemplate}" />
+          <c:EmptyState IsVisible="{Binding HasNoMatches}"
+                        Classes="appear"
+                        Icon="search"
+                        Title="No matches"
+                        Message="Try a different search, or clear the filters to see everything."
+                        ActionText="Clear filters"
+                        Command="{Binding ClearFiltersCommand}" />
+        </Panel>
+      </DockPanel>
+    </Grid>
+
+    <c:EmptyState IsVisible="{Binding !HasTransactions}"
+                  Classes="appear"
+                  Icon="list"
+                  Title="No transactions yet"
+                  Message="Import a statement from your bank and your transactions will appear here, already sorted."
+                  ActionText="Import a statement"
+                  Command="{Binding GoToImportCommand}" />
+  </Grid>
+</UserControl>

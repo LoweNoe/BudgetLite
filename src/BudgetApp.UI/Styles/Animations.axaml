@@ -1,0 +1,221 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:c="using:BudgetApp.UI.Controls">
+
+  <!--
+    Motion language: quick (150-250 ms), ease-out, small distances. Entrances fade in while
+    rising 12px; numbered "reveal-N" classes stagger sections on a page by 50 ms each.
+  -->
+
+  <Style Selector=":is(Control).reveal-0">
+    <Style.Animations>
+      <Animation Duration="0:0:0.38" Easing="CubicEaseOut" FillMode="Both">
+        <KeyFrame Cue="0%"><Setter Property="Opacity" Value="0" /><Setter Property="TranslateTransform.Y" Value="12" /></KeyFrame>
+        <KeyFrame Cue="100%"><Setter Property="Opacity" Value="1" /><Setter Property="TranslateTransform.Y" Value="0" /></KeyFrame>
+      </Animation>
+    </Style.Animations>
+  </Style>
+  <Style Selector=":is(Control).reveal-1">
+    <Style.Animations>
+      <Animation Duration="0:0:0.38" Delay="0:0:0.05" Easing="CubicEaseOut" FillMode="Both">
+        <KeyFrame Cue="0%"><Setter Property="Opacity" Value="0" /><Setter Property="TranslateTransform.Y" Value="12" /></KeyFrame>
+        <KeyFrame Cue="100%"><Setter Property="Opacity" Value="1" /><Setter Property="TranslateTransform.Y" Value="0" /></KeyFrame>
+      </Animation>
+    </Style.Animations>
+  </Style>
+  <Style Selector=":is(Control).reveal-2">
+    <Style.Animations>
+      <Animation Duration="0:0:0.38" Delay="0:0:0.1" Easing="CubicEaseOut" FillMode="Both">
+        <KeyFrame Cue="0%"><Setter Property="Opacity" Value="0" /><Setter Property="TranslateTransform.Y" Value="12" /></KeyFrame>
+        <KeyFrame Cue="100%"><Setter Property="Opacity" Value="1" /><Setter Property="TranslateTransform.Y" Value="0" /></KeyFrame>
+      </Animation>
+    </Style.Animations>
+  </Style>
+  <Style Selector=":is(Control).reveal-3">
+    <Style.Animations>
+      <Animation Duration="0:0:0.38" Delay="0:0:0.15" Easing="CubicEaseOut" FillMode="Both">
+        <KeyFrame Cue="0%"><Setter Property="Opacity" Value="0" /><Setter Property="TranslateTransform.Y" Value="12" /></KeyFrame>
+        <KeyFrame Cue="100%"><Setter Property="Opacity" Value="1" /><Setter Property="TranslateTransform.Y" Value="0" /></KeyFrame>
+      </Animation>
+    </Style.Animations>
+  </Style>
+  <Style Selector=":is(Control).reveal-4">
+    <Style.Animations>
+      <Animation Duration="0:0:0.38" Delay="0:0:0.2" Easing="CubicEaseOut" FillMode="Both">
+        <KeyFrame Cue="0%"><Setter Property="Opacity" Value="0" /><Setter Property="TranslateTransform.Y" Value="12" /></KeyFrame>
+        <KeyFrame Cue="100%"><Setter Property="Opacity" Value="1" /><Setter Property="TranslateTransform.Y" Value="0" /></KeyFrame>
+      </Animation>
+    </Style.Animations>
+  </Style>
+  <Style Selector=":is(Control).reveal-5">
+    <Style.Animations>
+      <Animation Duration="0:0:0.38" Delay="0:0:0.25" Easing="CubicEaseOut" FillMode="Both">
+        <KeyFrame Cue="0%"><Setter Property="Opacity" Value="0" /><Setter Property="TranslateTransform.Y" Value="12" /></KeyFrame>
+        <KeyFrame Cue="100%"><Setter Property="Opacity" Value="1" /><Setter Property="TranslateTransform.Y" Value="0" /></KeyFrame>
+      </Animation>
+    </Style.Animations>
+  </Style>
+
+  <!-- Panels shown and hidden with IsVisible (wizard steps, stepper panels, banners) ease in each time they appear. -->
+  <Style Selector=":is(Control).appear[IsVisible=True]">
+    <Style.Animations>
+      <Animation Duration="0:0:0.28" Easing="CubicEaseOut" FillMode="Both">
+        <KeyFrame Cue="0%"><Setter Property="Opacity" Value="0" /><Setter Property="TranslateTransform.Y" Value="10" /></KeyFrame>
+        <KeyFrame Cue="100%"><Setter Property="Opacity" Value="1" /><Setter Property="TranslateTransform.Y" Value="0" /></KeyFrame>
+      </Animation>
+    </Style.Animations>
+  </Style>
+
+  <Style Selector=":is(Control).pop[IsVisible=True]">
+    <Style.Animations>
+      <Animation Duration="0:0:0.32" Easing="BackEaseOut" FillMode="Both">
+        <KeyFrame Cue="0%"><Setter Property="Opacity" Value="0" /><Setter Property="ScaleTransform.ScaleX" Value="0.6" /><Setter Property="ScaleTransform.ScaleY" Value="0.6" /></KeyFrame>
+        <KeyFrame Cue="100%"><Setter Property="Opacity" Value="1" /><Setter Property="ScaleTransform.ScaleX" Value="1" /><Setter Property="ScaleTransform.ScaleY" Value="1" /></KeyFrame>
+      </Animation>
+    </Style.Animations>
+  </Style>
+
+  <!-- Press feedback: buttons sink very slightly. -->
+  <Style Selector="Button">
+    <Setter Property="RenderTransform" Value="none" />
+    <Setter Property="Transitions">
+      <Transitions>
+        <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.12" Easing="CubicEaseOut" />
+      </Transitions>
+    </Setter>
+  </Style>
+  <Style Selector="Button:pressed">
+    <Setter Property="RenderTransform" Value="scale(0.97)" />
+  </Style>
+
+  <!-- Cards that respond to the pointer lift with a soft shadow. -->
+  <Style Selector="Border.card.interactive">
+    <Setter Property="BoxShadow" Value="0 0 0 0 #00000000" />
+    <Setter Property="Transitions">
+      <Transitions>
+        <BoxShadowsTransition Property="BoxShadow" Duration="0:0:0.2" Easing="CubicEaseOut" />
+        <BrushTransition Property="BorderBrush" Duration="0:0:0.2" />
+      </Transitions>
+    </Setter>
+  </Style>
+  <Style Selector="Border.card.interactive:pointerover">
+    <Setter Property="BoxShadow" Value="0 8 24 -6 #29000000" />
+  </Style>
+
+  <!-- Sidebar: a small accent bar grows in next to the selected page. -->
+  <Style Selector="ListBox.nav Border.indicator">
+    <Setter Property="Width" Value="{StaticResource IndicatorWidth}" />
+    <Setter Property="Height" Value="0" />
+    <Setter Property="Opacity" Value="0" />
+    <Setter Property="CornerRadius" Value="{StaticResource PillRadius}" />
+    <Setter Property="Background" Value="{DynamicResource AccentBrush}" />
+    <Setter Property="HorizontalAlignment" Value="Left" />
+    <Setter Property="VerticalAlignment" Value="Center" />
+    <Setter Property="Margin" Value="{StaticResource IndicatorMargin}" />
+    <Setter Property="Transitions">
+      <Transitions>
+        <DoubleTransition Property="Height" Duration="0:0:0.22" Easing="CubicEaseOut" />
+        <DoubleTransition Property="Opacity" Duration="0:0:0.18" />
+      </Transitions>
+    </Setter>
+  </Style>
+  <Style Selector="ListBox.nav ListBoxItem:selected Border.indicator">
+    <Setter Property="Height" Value="{StaticResource IndicatorHeight}" />
+    <Setter Property="Opacity" Value="1" />
+  </Style>
+
+  <!-- Onboarding progress dots stretch into a pill for the current step. -->
+  <Style Selector="Border.dot">
+    <Setter Property="Transitions">
+      <Transitions>
+        <BrushTransition Property="Background" Duration="0:0:0.2" />
+        <DoubleTransition Property="Width" Duration="0:0:0.25" Easing="CubicEaseOut" />
+      </Transitions>
+    </Setter>
+  </Style>
+  <Style Selector="Border.dot.current">
+    <Setter Property="Width" Value="{StaticResource DotActiveWidth}" />
+  </Style>
+
+  <!-- Stepper badges and connectors fill with colour as you progress. -->
+  <Style Selector="Border.step-badge, Border.connector">
+    <Setter Property="Transitions">
+      <Transitions>
+        <BrushTransition Property="Background" Duration="0:0:0.25" />
+        <BrushTransition Property="BorderBrush" Duration="0:0:0.25" />
+      </Transitions>
+    </Setter>
+  </Style>
+
+  <!-- Category colour dots crossfade when a transaction moves category. -->
+  <Style Selector="c|ColourDot">
+    <Setter Property="Transitions">
+      <Transitions>
+        <BrushTransition Property="Background" Duration="0:0:0.2" />
+      </Transitions>
+    </Setter>
+  </Style>
+
+  <!-- Toasts slide in from the right and fade away. -->
+  <Style Selector="Border.toast">
+    <Style.Animations>
+      <Animation Duration="0:0:0.3" Easing="CubicEaseOut" FillMode="Both">
+        <KeyFrame Cue="0%"><Setter Property="Opacity" Value="0" /><Setter Property="TranslateTransform.X" Value="32" /></KeyFrame>
+        <KeyFrame Cue="100%"><Setter Property="Opacity" Value="1" /><Setter Property="TranslateTransform.X" Value="0" /></KeyFrame>
+      </Animation>
+    </Style.Animations>
+  </Style>
+  <Style Selector="Border.toast.closing">
+    <Style.Animations>
+      <Animation Duration="0:0:0.2" Easing="CubicEaseIn" FillMode="Both">
+        <KeyFrame Cue="0%"><Setter Property="Opacity" Value="1" /><Setter Property="TranslateTransform.X" Value="0" /></KeyFrame>
+        <KeyFrame Cue="100%"><Setter Property="Opacity" Value="0" /><Setter Property="TranslateTransform.X" Value="32" /></KeyFrame>
+      </Animation>
+    </Style.Animations>
+  </Style>
+
+  <!-- Dialog: the scrim fades, the card scales up from 96%. -->
+  <Style Selector="Panel.dialog-host[IsVisible=True] > Border.scrim">
+    <Style.Animations>
+      <Animation Duration="0:0:0.2" FillMode="Both">
+        <KeyFrame Cue="0%"><Setter Property="Opacity" Value="0" /></KeyFrame>
+        <KeyFrame Cue="100%"><Setter Property="Opacity" Value="1" /></KeyFrame>
+      </Animation>
+    </Style.Animations>
+  </Style>
+  <Style Selector="Panel.dialog-host[IsVisible=True] > Border.dialog">
+    <Style.Animations>
+      <Animation Duration="0:0:0.24" Easing="CubicEaseOut" FillMode="Both">
+        <KeyFrame Cue="0%"><Setter Property="Opacity" Value="0" /><Setter Property="ScaleTransform.ScaleX" Value="0.96" /><Setter Property="ScaleTransform.ScaleY" Value="0.96" /></KeyFrame>
+        <KeyFrame Cue="100%"><Setter Property="Opacity" Value="1" /><Setter Property="ScaleTransform.ScaleX" Value="1" /><Setter Property="ScaleTransform.ScaleY" Value="1" /></KeyFrame>
+      </Animation>
+    </Style.Animations>
+  </Style>
+
+  <!-- Import drop zone glows while a file is dragged over it. -->
+  <Style Selector="Border.drop-zone">
+    <Setter Property="Background" Value="{DynamicResource SurfaceBrush}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}" />
+    <Setter Property="Transitions">
+      <Transitions>
+        <BrushTransition Property="Background" Duration="0:0:0.18" />
+        <BrushTransition Property="BorderBrush" Duration="0:0:0.18" />
+      </Transitions>
+    </Setter>
+  </Style>
+  <Style Selector="Border.drop-zone.dragging">
+    <Setter Property="Background" Value="{DynamicResource DropZoneBrush}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource AccentBrush}" />
+  </Style>
+  <Style Selector="Border.drop-zone c|IconView.drop-icon">
+    <Setter Property="RenderTransform" Value="none" />
+    <Setter Property="Transitions">
+      <Transitions>
+        <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.25" Easing="BackEaseOut" />
+      </Transitions>
+    </Setter>
+  </Style>
+  <Style Selector="Border.drop-zone.dragging c|IconView.drop-icon">
+    <Setter Property="RenderTransform" Value="translateY(-4px) scale(1.12)" />
+  </Style>
+</Styles>

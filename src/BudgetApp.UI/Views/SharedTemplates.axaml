@@ -1,0 +1,48 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:vm="using:BudgetApp.UI.ViewModels"
+                    xmlns:c="using:BudgetApp.UI.Controls">
+
+  <DataTemplate x:Key="CategoryOptionTemplate" x:DataType="vm:CategoryOption">
+    <StackPanel Orientation="Horizontal" Spacing="{StaticResource SpaceS}">
+      <c:ColourDot Token="{Binding Colour}" />
+      <TextBlock Text="{Binding Name}" VerticalAlignment="Center" />
+    </StackPanel>
+  </DataTemplate>
+
+  <DataTemplate x:Key="TransactionRowTemplate" x:DataType="vm:TransactionRowViewModel">
+    <Grid ColumnSpacing="{StaticResource SpaceL}">
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="{StaticResource DateColumnLength}" />
+        <ColumnDefinition Width="*" />
+        <ColumnDefinition Width="{StaticResource CategoryColumnLength}" />
+        <ColumnDefinition Width="{StaticResource AmountColumnLength}" />
+      </Grid.ColumnDefinitions>
+      <TextBlock Classes="secondary" Text="{Binding DateText}" VerticalAlignment="Center" />
+      <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="{StaticResource SpaceS}" VerticalAlignment="Center">
+        <TextBlock Text="{Binding Description}"
+                   ToolTip.Tip="{Binding RawDescription}"
+                   TextTrimming="CharacterEllipsis"
+                   VerticalAlignment="Center" />
+        <c:IconView Key="repeat"
+                    Width="{StaticResource BadgeIconSize}"
+                    Height="{StaticResource BadgeIconSize}"
+                    Foreground="{DynamicResource AccentTextBrush}"
+                    IsVisible="{Binding IsRecurring}"
+                    ToolTip.Tip="Recurring payment"
+                    VerticalAlignment="Center" />
+      </StackPanel>
+      <ComboBox Grid.Column="2"
+                ItemsSource="{Binding Categories}"
+                SelectedItem="{Binding SelectedCategory}"
+                ItemTemplate="{StaticResource CategoryOptionTemplate}"
+                HorizontalAlignment="Stretch" />
+      <TextBlock Grid.Column="3"
+                 Classes="amount"
+                 Classes.positive="{Binding IsCredit}"
+                 Text="{Binding AmountText}"
+                 HorizontalAlignment="Right"
+                 VerticalAlignment="Center" />
+    </Grid>
+  </DataTemplate>
+</ResourceDictionary>

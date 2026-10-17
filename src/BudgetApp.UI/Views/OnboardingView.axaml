@@ -1,0 +1,169 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:BudgetApp.UI.ViewModels"
+             xmlns:v="using:BudgetApp.UI.Views"
+             xmlns:c="using:BudgetApp.UI.Controls"
+             x:Class="BudgetApp.UI.Views.OnboardingView"
+             x:DataType="vm:OnboardingViewModel">
+  <!-- The page only scrolls when the window is too short for the card; otherwise the card stays centred. -->
+  <ScrollViewer x:Name="PageScroller" Background="{DynamicResource SurfaceBrush}">
+  <Grid MinHeight="{Binding #PageScroller.Bounds.Height}">
+    <Border Classes="card"
+            Background="{DynamicResource BackgroundBrush}"
+            Width="{StaticResource WizardWidth}"
+            Padding="{StaticResource WizardPadding}"
+            Margin="{StaticResource WizardMargin}"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center">
+      <DockPanel>
+        <Grid DockPanel.Dock="Top" ColumnDefinitions="*,Auto" Margin="{StaticResource SectionGap}">
+          <TextBlock Classes="caption" Text="{Binding StepLabel}" VerticalAlignment="Center" />
+          <ItemsControl Grid.Column="1" ItemsSource="{Binding Dots}" VerticalAlignment="Center">
+            <ItemsControl.ItemsPanel>
+              <ItemsPanelTemplate>
+                <StackPanel Orientation="Horizontal" Spacing="{StaticResource SpaceS}" />
+              </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+              <DataTemplate x:DataType="vm:StepDot">
+                <Border Classes="dot" Classes.active="{Binding IsActive}" Classes.current="{Binding IsCurrent}" />
+              </DataTemplate>
+            </ItemsControl.ItemTemplate>
+          </ItemsControl>
+        </Grid>
+
+        <Grid DockPanel.Dock="Bottom" ColumnDefinitions="Auto,*,Auto,Auto" ColumnSpacing="{StaticResource SpaceS}"
+              Classes="appear" IsVisible="{Binding ShowFooter}">
+          <Button Classes="ghost" Content="Skip setup" Command="{Binding SkipCommand}" IsVisible="{Binding ShowSkip}" />
+          <Button Grid.Column="2" Classes="secondary" Content="Back" Command="{Binding BackCommand}" IsVisible="{Binding CanGoBack}" />
+          <Button Grid.Column="3" Classes="primary" Content="{Binding NextText}" Command="{Binding NextCommand}" />
+        </Grid>
+
+        <!-- Keeps a steady size for short steps and glides taller when a step needs the room. -->
+        <c:SmoothHeight MinHeight="{StaticResource WizardBodyHeight}" Margin="{StaticResource CardPadding}">
+          <Panel>
+            <!-- 1. Welcome -->
+            <StackPanel Classes="appear" IsVisible="{Binding IsWelcome}" Spacing="{StaticResource SpaceL}" VerticalAlignment="Center">
+              <Border Classes="icon-badge pop" IsVisible="{Binding IsWelcome}">
+                <c:IconView Classes="large" Key="shield" Foreground="{DynamicResource AccentTextBrush}" />
+              </Border>
+              <TextBlock Classes="display" Text="Welcome to BudgetLite" />
+              <TextBlock Classes="secondary" TextWrapping="Wrap"
+                         Text="See where your money goes in a few minutes. Import a statement from your bank and we'll sort every transaction for you." />
+              <TextBlock Classes="secondary" TextWrapping="Wrap"
+                         Text="Everything stays on this computer. No accounts, no cloud and no internet connection needed." />
+            </StackPanel>
+
+            <!-- 2. Theme -->
+            <StackPanel Classes="appear" IsVisible="{Binding IsThemeStep}" Spacing="{StaticResource SpaceL}">
+              <TextBlock Classes="title" Text="Choose how it looks" />
+              <TextBlock Classes="secondary" TextWrapping="Wrap" Text="You can change this any time from the top bar or Settings." />
+              <Grid ColumnDefinitions="Auto,*" ColumnSpacing="{StaticResource SpaceXl}">
+                <v:ThemePicker DataContext="{Binding Theme}" />
+                <Border Grid.Column="1" Classes="card">
+                  <StackPanel Spacing="{StaticResource SpaceM}">
+                    <TextBlock Classes="caption" Text="Preview" />
+                    <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="{StaticResource SpaceS}">
+                      <c:ColourDot Token="chart-1" />
+                      <TextBlock Grid.Column="1" Text="Groceries" />
+                      <TextBlock Grid.Column="2" Classes="amount" Text="-R 1 240,00" />
+                    </Grid>
+                    <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="{StaticResource SpaceS}">
+                      <c:ColourDot Token="chart-5" />
+                      <TextBlock Grid.Column="1" Text="Takeaways" />
+                      <TextBlock Grid.Column="2" Classes="amount" Text="-R 310,00" />
+                    </Grid>
+                    <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="{StaticResource SpaceS}">
+                      <c:ColourDot Token="chart-2" />
+                      <TextBlock Grid.Column="1" Text="Salary" />
+                      <TextBlock Grid.Column="2" Classes="amount positive" Text="R 25 000,00" />
+                    </Grid>
+                    <Button Classes="primary" Content="Primary action" HorizontalAlignment="Left" />
+                  </StackPanel>
+                </Border>
+              </Grid>
+            </StackPanel>
+
+            <!-- 3. Payday and currency -->
+            <StackPanel Classes="appear" IsVisible="{Binding IsPaydayStep}" Spacing="{StaticResource SpaceL}">
+              <TextBlock Classes="title" Text="When do you get paid?" />
+              <TextBlock Classes="secondary" TextWrapping="Wrap"
+                         Text="We use your payday to forecast how far your money will stretch each month." />
+              <StackPanel Spacing="{StaticResource SpaceXs}">
+                <TextBlock Classes="label" Text="Payday (day of the month)" />
+                <NumericUpDown Value="{Binding PayDay}" Minimum="1" Maximum="31" Increment="1" FormatString="0"
+                               Width="{StaticResource FieldWidth}" HorizontalAlignment="Left" />
+              </StackPanel>
+              <StackPanel Spacing="{StaticResource SpaceXs}">
+                <TextBlock Classes="label" Text="If payday falls on a weekend" />
+                <ComboBox ItemsSource="{Binding WeekendOptions}" SelectedItem="{Binding SelectedWeekendOption}" Width="{StaticResource FieldWidth}"
+                          DisplayMemberBinding="{Binding Label, DataType=vm:WeekendOption}" />
+              </StackPanel>
+              <StackPanel Spacing="{StaticResource SpaceXs}">
+                <TextBlock Classes="label" Text="Currency" />
+                <ComboBox ItemsSource="{Binding Currencies}" SelectedItem="{Binding SelectedCurrency}" Width="{StaticResource FieldWidth}" />
+              </StackPanel>
+            </StackPanel>
+
+            <!-- 4. Bank tips -->
+            <StackPanel Classes="appear" IsVisible="{Binding IsBankStep}" Spacing="{StaticResource SpaceL}">
+              <TextBlock Classes="title" Text="Download a statement from your bank" />
+              <TextBlock Classes="secondary" TextWrapping="Wrap"
+                         Text="Pick your bank for quick steps. CSV works best, but PDF statements work too." />
+              <ListBox Classes="pills" ItemsSource="{Binding BankTips}" SelectedItem="{Binding SelectedBank}">
+                <ListBox.ItemsPanel>
+                  <ItemsPanelTemplate>
+                    <WrapPanel />
+                  </ItemsPanelTemplate>
+                </ListBox.ItemsPanel>
+                <ListBox.ItemTemplate>
+                  <DataTemplate x:DataType="vm:BankTipViewModel">
+                    <TextBlock Text="{Binding Bank}" />
+                  </DataTemplate>
+                </ListBox.ItemTemplate>
+              </ListBox>
+              <Border Classes="card">
+                <StackPanel Spacing="{StaticResource SpaceM}">
+                  <TextBlock Classes="secondary" Text="{Binding SelectedBank.Summary}" TextWrapping="Wrap" />
+                  <ItemsControl ItemsSource="{Binding SelectedBank.Steps}">
+                    <ItemsControl.ItemsPanel>
+                      <ItemsPanelTemplate>
+                        <StackPanel Spacing="{StaticResource SpaceS}" />
+                      </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                      <DataTemplate x:DataType="vm:NumberedStep">
+                        <Grid ColumnDefinitions="Auto,*" ColumnSpacing="{StaticResource SpaceM}">
+                          <Border Classes="step-badge done">
+                            <TextBlock Text="{Binding Number}" />
+                          </Border>
+                          <TextBlock Grid.Column="1" Text="{Binding Text}" TextWrapping="Wrap" VerticalAlignment="Center" />
+                        </Grid>
+                      </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                  </ItemsControl>
+                </StackPanel>
+              </Border>
+            </StackPanel>
+
+            <!-- 5. Import -->
+            <StackPanel Classes="appear" IsVisible="{Binding IsImportStep}" Spacing="{StaticResource SpaceL}">
+              <TextBlock Classes="title" Text="Import your first statement" />
+              <ContentControl Content="{Binding Import}" />
+            </StackPanel>
+
+            <!-- 6. Done -->
+            <StackPanel Classes="appear" IsVisible="{Binding IsDoneStep}" Spacing="{StaticResource SpaceL}" VerticalAlignment="Center">
+              <Border Classes="icon-badge pop" IsVisible="{Binding IsDoneStep}">
+                <c:IconView Classes="large" Key="check-circle" Foreground="{DynamicResource AccentTextBrush}" />
+              </Border>
+              <TextBlock Classes="display" Text="You're all set" />
+              <TextBlock Classes="secondary" Text="{Binding DoneMessage}" TextWrapping="Wrap" />
+            </StackPanel>
+          </Panel>
+        </c:SmoothHeight>
+      </DockPanel>
+    </Border>
+  </Grid>
+  </ScrollViewer>
+</UserControl>

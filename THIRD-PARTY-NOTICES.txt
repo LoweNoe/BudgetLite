@@ -1,0 +1,36 @@
+BudgetLite uses the following open source components. Release builds bundle
+them into the executable. Each is used under the license listed below.
+
+Avalonia (Avalonia, Avalonia.Desktop, Avalonia.Themes.Fluent)
+  License: MIT
+  https://github.com/AvaloniaUI/Avalonia
+
+Inter font (via Avalonia.Fonts.Inter)
+  License: SIL Open Font License 1.1
+  https://github.com/rsms/inter
+
+SkiaSharp and HarfBuzzSharp (Avalonia rendering)
+  License: MIT
+  https://github.com/mono/SkiaSharp
+
+CommunityToolkit.Mvvm
+  License: MIT
+  https://github.com/CommunityToolkit/dotnet
+
+Microsoft.Extensions.DependencyInjection and the .NET runtime
+  License: MIT
+  https://github.com/dotnet/runtime
+
+CsvHelper
+  License: MS-PL or Apache-2.0 (dual licensed)
+  https://github.com/JoshClose/CsvHelper
+
+PdfPig
+  License: Apache-2.0
+  https://github.com/UglyToad/PdfPig
+
+Full license texts are available at the links above:
+  MIT:        https://opensource.org/license/mit
+  Apache-2.0: https://www.apache.org/licenses/LICENSE-2.0
+  MS-PL:      https://opensource.org/license/ms-pl-html
+  OFL-1.1:    https://openfontlicense.org

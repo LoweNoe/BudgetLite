@@ -1,0 +1,68 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:BudgetApp.UI.ViewModels"
+        xmlns:svc="using:BudgetApp.UI.Services"
+        xmlns:c="using:BudgetApp.UI.Controls"
+        x:Class="BudgetApp.UI.Views.MainWindow"
+        x:DataType="vm:MainWindowViewModel"
+        Title="BudgetLite"
+        Width="1280" Height="840"
+        MinWidth="{StaticResource WindowMinWidth}"
+        MinHeight="{StaticResource WindowMinHeight}"
+        WindowStartupLocation="CenterScreen">
+  <Panel>
+    <TransitioningContentControl x:Name="RootContent" Content="{Binding Content}" Background="{DynamicResource BackgroundBrush}" />
+
+    <!-- Toasts -->
+    <ItemsControl ItemsSource="{Binding Toasts.Toasts}"
+                  HorizontalAlignment="Right"
+                  VerticalAlignment="Bottom"
+                  Margin="{StaticResource ToastHostMargin}">
+      <ItemsControl.ItemsPanel>
+        <ItemsPanelTemplate>
+          <StackPanel Spacing="{StaticResource SpaceS}" />
+        </ItemsPanelTemplate>
+      </ItemsControl.ItemsPanel>
+      <ItemsControl.ItemTemplate>
+        <DataTemplate x:DataType="svc:ToastViewModel">
+          <Border Classes="toast" Classes.closing="{Binding IsClosing}" Classes.warning="{Binding IsWarning}" Classes.info="{Binding IsInfo}">
+            <Grid ColumnDefinitions="Auto,*,Auto,Auto" ColumnSpacing="{StaticResource SpaceM}">
+              <c:IconView Classes="toast-icon" Key="{Binding Icon}" VerticalAlignment="Center" />
+              <TextBlock Grid.Column="1" Text="{Binding Message}" TextWrapping="Wrap" VerticalAlignment="Center" />
+              <Button Grid.Column="2" Classes="link" Content="{Binding ActionText}" Command="{Binding RunActionCommand}"
+                      IsVisible="{Binding HasAction}" VerticalAlignment="Center" />
+              <Button Grid.Column="3" Classes="icon ghost" Command="{Binding DismissCommand}" ToolTip.Tip="Dismiss" VerticalAlignment="Center">
+                <c:IconView Key="x" />
+              </Button>
+            </Grid>
+          </Border>
+        </DataTemplate>
+      </ItemsControl.ItemTemplate>
+    </ItemsControl>
+
+    <!-- Confirm dialog -->
+    <Panel Classes="dialog-host" IsVisible="{Binding Dialogs.HasDialog}">
+      <Border Classes="scrim" />
+      <Border Classes="dialog">
+        <ContentControl Content="{Binding Dialogs.Current}">
+          <ContentControl.ContentTemplate>
+            <DataTemplate x:DataType="svc:ConfirmDialogViewModel">
+              <StackPanel Spacing="{StaticResource SpaceL}">
+                <TextBlock Classes="title" Text="{Binding Title}" TextWrapping="Wrap" />
+                <TextBlock Classes="secondary" Text="{Binding Message}" TextWrapping="Wrap" />
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="{StaticResource SpaceS}">
+                  <Button Classes="secondary" Content="{Binding CancelText}" Command="{Binding CancelCommand}" IsCancel="True" />
+                  <Button Classes="primary" Content="{Binding ConfirmText}" Command="{Binding ConfirmCommand}" IsDefault="True" IsVisible="{Binding IsNormal}" />
+                  <Button Classes="danger" Content="{Binding ConfirmText}" Command="{Binding ConfirmCommand}" IsVisible="{Binding IsDestructive}" />
+                </StackPanel>
+              </StackPanel>
+            </DataTemplate>
+          </ContentControl.ContentTemplate>
+        </ContentControl>
+      </Border>
+    </Panel>
+
+    <!-- Snapshot of the old theme, faded out after a theme switch -->
+    <Image x:Name="ThemeSnapshot" IsHitTestVisible="False" IsVisible="False" Stretch="Fill" />
+  </Panel>
+</Window>
