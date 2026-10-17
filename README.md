@@ -14,16 +14,18 @@ Everything stays on your computer. No account, no cloud, no internet connection 
 ![Platforms](https://img.shields.io/badge/platform-Windows%20%7C%20Linux-lightgrey)
 ![License: MIT](https://img.shields.io/badge/license-MIT-green)
 
-![Dashboard](docs/screenshots/dashboard-light.png)
+<a href="docs/budgetlite-demo.mp4"><img src="docs/demo.webp" alt="BudgetLite demo: importing statements, spending by category, insights, payday forecast and budgets" /></a>
+
+*[Watch the full video with sound](docs/budgetlite-demo.mp4). Everything shown uses the fictional sample statements in [`samples/`](samples).*
 
 <details>
-<summary>Dark mode</summary>
+<summary>Screenshots</summary>
+
+![Dashboard](docs/screenshots/dashboard-light.png)
 
 ![Budgets in dark mode](docs/screenshots/budgets-dark.png)
 
 </details>
-
-*Screenshots use the fictional sample statements in [`samples/`](samples).*
 
 ## Features
 
