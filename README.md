@@ -1,3 +1,5 @@
+<img src="docs/icon.png" alt="BudgetLite icon" width="96" align="right" />
+
 # BudgetLite
 
 **Your bank statements, finally explained.**

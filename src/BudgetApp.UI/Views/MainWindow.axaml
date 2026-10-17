@@ -6,6 +6,7 @@
         x:Class="BudgetApp.UI.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
         Title="BudgetLite"
+        Icon="/Assets/app.ico"
         Width="1280" Height="840"
         MinWidth="{StaticResource WindowMinWidth}"
         MinHeight="{StaticResource WindowMinHeight}"
